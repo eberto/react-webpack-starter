@@ -1,4 +1,4 @@
-/// <reference path="../../lib/typings/index.d.ts" />
+/// <reference path="../../../lib/typings/index.d.ts" />
 
 //import * as greeter	from './../greeter';
 //import * as $ from 'jquery';
