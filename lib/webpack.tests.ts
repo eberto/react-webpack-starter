@@ -2,5 +2,5 @@
 
 declare var require : { context: any };
 
-var context = require.context('../tests', true, /.spec\.ts$/); //make sure you have your directory and regex test set correctly!
+var context = require.context('../tests', true, /.spec\.ts$/);
 context.keys().forEach(context);
