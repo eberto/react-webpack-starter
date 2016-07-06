@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "es5",
     "module": "commonjs",
     "noImplicitAny": true,
     "removeComments": true,
@@ -8,5 +9,8 @@
   "files": [
     "typings/index.d.ts",
     "../components/app.ts"    
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
