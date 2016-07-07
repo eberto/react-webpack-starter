@@ -1,6 +1,7 @@
 /// <reference path="typings/index.d.ts" />
 
-declare var require : { context: any };
+import "../tests/test1.spec.ts";
 
-var context = require.context('../tests', true, /.spec\.ts$/);
-context.keys().forEach(context);
+declare var module: any;
+
+module.hot.accept();

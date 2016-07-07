@@ -1,8 +1,9 @@
 /// <reference path="../lib/typings/index.d.ts"/>
 
 describe('Testing tests', () => {
-    it('true is true', () => expect(true).toEqual(true));
+    it('true is true', () => expect(true).toEqual(false));
     it('true is false', () => expect(true).toEqual(true));
+console.log("updated");
 });
 
 describe('Testing tests 2', () => {
