@@ -9,6 +9,7 @@
     "start-prod": "node server.prod.js",
     "build": "webpack --display-chunks",
     "build-prod": "webpack --display-chunks --config webpack.config.prod.js",
+    "build-vendor": "webpack --display-chunks --config webpack.config.vendor.js",
     "test": "karma start"
   },
   "author": "",
