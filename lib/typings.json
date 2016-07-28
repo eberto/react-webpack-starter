@@ -1,9 +1,12 @@
 {
   "globalDependencies": {
+    "deep-freeze": "registry:dt/deep-freeze#0.0.0+20160317120654",
+    "es6-promise": "registry:dt/es6-promise#0.0.0+20160614011821",
     "jasmine": "registry:dt/jasmine#2.2.0+20160621224255",
     "jquery": "registry:dt/jquery#1.10.0+20160620094458",
     "react": "registry:dt/react#0.14.0+20160630100702",
     "react-addons-test-utils": "registry:dt/react-addons-test-utils#0.14.0+20160427035638",
-    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040"
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "redux": "registry:dt/redux#3.5.2+20160703092728"
   }
 }

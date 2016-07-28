@@ -4,7 +4,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
 
-import { Greeter } from "./../src/components/greeter";
+/*import { Greeter } from "./../src/components/greeter";
 
 describe("Greeter", () => {
 
@@ -14,8 +14,8 @@ describe("Greeter", () => {
         component = TestUtils.renderIntoDocument(<Greeter compiler="Webpack" framework="Typescript" />);
     });
 
-    it('Outputs correct text', () => {
+    it('Should output correct text', () => {
         var componentDOM = ReactDOM.findDOMNode(component);
         expect(componentDOM.textContent).toMatch(/Hello from Webpack and Typescript!/);
     });
-});
+});*/

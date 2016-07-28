@@ -1,6 +1,7 @@
 /// <reference path="typings/index.d.ts" />
 
 import "../tests/greeter.spec.tsx";
+import "../tests/todos.spec.tsx";
 
 declare var module: any;
 

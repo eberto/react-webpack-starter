@@ -1,16 +1,3 @@
-/// <reference path="../../../lib/typings/index.d.ts" />
+import { renderer } from "./../dependencies"
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-
-import { Greeter } from "./../greeter";
-
-import "./fonts/material-icons.scss";
-
-var root_div = document.getElementById("root");
-if(!root_div) {
-  const root = document.createElement("div");
-  root.id = "root";
-  document.body.appendChild(root);
-  ReactDOM.render(<Greeter compiler="TypeScript" framework="React" />, root);
-}
+renderer.render();
