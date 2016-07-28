@@ -1,12 +1,13 @@
-import { IStore } from "./../framework/store/abstractions"
-import { IAppState } from "./../actions/state"
-import { AddTodoAsyncAction, DeleteTodoAsyncAction } from "./../actions"
+import { IStore } from "./../framework/store"
+import { IAppState } from "./state"
+import { AddTodoAsyncAction, DeleteTodoAsyncAction, ToggleTodoAsyncAction } from "./actions/todos"
 import { Todo } from "./../models/todo"
 
 export interface ITodoService {
     getTodos(): Array<Todo>;
     addTodo(text: string): void;
     deleteTodo(todoId: number): void;
+    toggleTodo(todo: Todo): void;
 }
 
 export class TodoService implements ITodoService {
@@ -24,5 +25,9 @@ export class TodoService implements ITodoService {
 
     public deleteTodo(todoId: number): void {
         this.store.dispatchAsync(new DeleteTodoAsyncAction(todoId));
+    }
+
+    public toggleTodo(todo: Todo): void {
+        this.store.dispatchAsync(new ToggleTodoAsyncAction(todo));
     }
 }

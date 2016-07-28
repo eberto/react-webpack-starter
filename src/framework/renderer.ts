@@ -3,12 +3,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { IListener, IStore } from "./store/abstractions"
+import { IStateListener, IStateNotifier } from "./observer"
 
-export abstract class Renderer implements IListener {
+export abstract class Renderer implements IStateListener {
 
-    public constructor(protected store: IStore, protected rootElementId: string) {
-        store.subscribe(this);
+    public constructor(protected notifier: IStateNotifier, protected rootElementId: string) {
+        notifier.subscribe(this);
     }
 
     protected getRootDiv(): HTMLElement {

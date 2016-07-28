@@ -1,66 +1,49 @@
 
-import { ICloner } from "./abstractions"
+import { ICloner } from "./"
 
 export class Cloner implements ICloner {
 
-    private mixin(dest: any, src: any, copyFunc: Function) {
-        var self = this;
-
-        var name: any;
-        var s: any;
-        var i: any;
+    private mixin(dest: any, source: any, copyFunc: Function) {
+        var propName: string;
+        var propValue: any;
         var empty: any = {};
-		for(name in src){
-			// the (!(name in empty) || empty[name] !== s) condition avoids copying properties in "source"
-			// inherited from Object.prototype.	 For example, if dest has a custom toString() method,
-			// don't overwrite it with the toString() method that source inherited from Object.prototype
-			s = src[name];
-			if(!(name in dest) || (dest[name] !== s && (!(name in empty) || empty[name] !== s))){
-				dest[name] = copyFunc ? copyFunc.call(this, s) : s;
+		for(propName in source) {
+			propValue = source[propName];
+			if(!(propName in dest) || (dest[propName] !== propValue && (!(propName in empty) || empty[propName] !== propValue))) {
+				dest[propName] = copyFunc ? copyFunc.call(this, propValue) : propValue;
 			}
 		}
 		return dest;
     } 
 
     public clone(source: any): any {
-        var self = this;
-
-        var src = <any>source;
-        if(!src || typeof src != "object" || Object.prototype.toString.call(src) === "[object Function]"){
+        if(!source || typeof source != "object" || Object.prototype.toString.call(source) === "[object Function]") {
             // null, undefined, any non-object, or function
-            return src;	// anything
+            return source;
         }
-        if((<any>src).nodeType && "cloneNode" in src){
+        if(source.nodeType && "cloneNode" in source) {
             // DOM Node
-            return src.cloneNode(true); // Node
+            return source.cloneNode(true);
         }
-        if(src instanceof Date){
-            // Date
-            return new Date(src.getTime());	// Date
+        if(source instanceof Date) {
+            return new Date(source.getTime());
         }
-        if(src instanceof RegExp){
-            // RegExp
-            return new RegExp(src);   // RegExp
+        if(source instanceof RegExp) {
+            return new RegExp(source);
         }
-        var r: any;
-        var i: any;
-        var l: any;
-        if(src instanceof Array){
-            // array
-            r = [];
-            for(i = 0, l = src.length; i < l; ++i){
-                if(i in src){
-                    r.push(this.clone(src[i]));
+        if(source instanceof Array) {
+            var arrayCopy = new Array<any>();
+            for(var i = 0, l = source.length; i < l; ++i) {
+                if(i in source) {
+                    arrayCopy.push(this.clone(source[i]));
                 }
             }
-            // we don't clone functions for performance reasons
-            //		}else if(d.isFunction(src)){
-            //			// function
-            //			r = function(){ return src.apply(this, arguments); };
-        }else{
+            return arrayCopy;
+        } 
+        else {
             // generic objects
-            r = src.constructor ? new src.constructor() : {};
+            var objectCopy = source.constructor ? new source.constructor() : {};
+            return this.mixin(objectCopy, source, this.clone);
         }
-        return this.mixin(r, src, this.clone);
     }
 }

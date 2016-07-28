@@ -1,9 +1,9 @@
-/// <reference path="../../lib/typings/index.d.ts" />
+/// <reference path="../../../lib/typings/index.d.ts" />
 
 import { Promise } from "es6-promise"
-import { IAction, IAsyncAction, IState } from "./../framework/store/abstractions"
-import { IAppState } from "./state"
-import { Todo } from "./../models/todo"
+import { IAction, IAsyncAction, IState } from "./../../framework/store"
+import { IAppState } from "./../state"
+import { Todo } from "./../../models/todo"
 
 export class AddTodoAction implements IAction {
 
@@ -50,11 +50,33 @@ export class DeleteTodoAsyncAction implements IAsyncAction {
         promise.then(() => {
             var self = this;
             var todoToDelete = state.todos.filter((t: Todo) => {
-                console.log("comparing " + t.id + " with " + self.todoId + ". Result: " + (t.id == self.todoId));
                 return t.id == self.todoId;
-            });
-            var todoIndex = state.todos.indexOf(todoToDelete[0]);
+            })[0];
+            var todoIndex = state.todos.indexOf(todoToDelete);
             state.todos.splice(todoIndex, 1);
+            resolve(state);
+        })
+        .catch((errors: any) => {
+            reject(errors);
+        });
+    }
+}
+
+export class ToggleTodoAsyncAction implements IAsyncAction {
+
+    public constructor(private todo: Todo) {
+    }
+
+    public execute(state: IAppState, resolve: (value?: IState) => void, reject: (errors?: any) => void): void {
+
+        var promise = Promise.resolve({});  //TODO: call post with fetch.
+
+        promise.then(() => {
+            var self = this;
+            var todoToToggle = state.todos.filter((t: Todo) => {
+                return t.id == self.todo.id;
+            })[0];
+            todoToToggle.completed = !todoToToggle.completed;
             resolve(state);
         })
         .catch((errors: any) => {

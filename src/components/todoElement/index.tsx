@@ -5,19 +5,24 @@ import { Todo } from "./../../models/todo";
 
 export interface ITodoElementProps {
     todo: Todo;
-    onDelete: (todo: Todo) => void;
+    onDelete: (todoId: number) => void;
+    onToggle: (todo: Todo) => void;
 }
 
 export class TodoElement extends React.Component<ITodoElementProps, {}> {
     render() {
+        var style: any = this.props.todo.completed? { textDecoration: 'line-through' } : {};
         return (
             <li>
-                {this.props.todo.text} &nbsp;
+                <span style={style} onClick={this.handleToggle.bind(this)}>{this.props.todo.text}</span> &nbsp;
                 <span onClick={this.handleDelete.bind(this)}>[x]</span>
             </li>
         );
     }
     handleDelete() {
-        this.props.onDelete(this.props.todo);
+        this.props.onDelete(this.props.todo.id);
+    }
+    handleToggle() {
+        this.props.onToggle(this.props.todo);
     }
 }

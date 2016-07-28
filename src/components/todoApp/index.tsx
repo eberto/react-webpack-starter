@@ -17,7 +17,7 @@ export class TodoApp extends React.Component<ITodoAppProps, {}> {
         return (
             <div>
                 <Header onAddTodo={todoService.addTodo.bind(todoService)} />
-                <Todos todos={todoService.getTodos()} onDelete={todoService.deleteTodo.bind(todoService)} />
+                <Todos todos={todoService.getTodos()} onDelete={todoService.deleteTodo.bind(todoService)} onToggle={todoService.toggleTodo.bind(todoService)} />
             </div>
         );
     }
