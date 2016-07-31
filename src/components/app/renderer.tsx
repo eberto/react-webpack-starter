@@ -3,9 +3,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { IStateNotifier } from "./../../framework/observer"
 import { ITodoService } from "./../../services/todos"
-import { Renderer } from "./../../framework/renderer"
+import { IStateNotifier, Renderer } from "viperx"
 import { TodoApp } from "./../todoApp"
 
 export class ViewRenderer extends Renderer {

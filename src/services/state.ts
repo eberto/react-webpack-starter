@@ -1,4 +1,4 @@
-import { IState } from "./../framework/store"
+import { IState } from "viperx"
 import { Todo } from "./../models/todo"
 
 export interface IAppState extends IState {

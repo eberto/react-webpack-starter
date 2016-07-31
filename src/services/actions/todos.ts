@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/typings/index.d.ts" />
 
 import { Promise } from "es6-promise"
-import { IAction, IAsyncAction, IState } from "./../../framework/store"
+import { IAction, IAsyncAction, IState } from "viperx"
 import { IAppState } from "./../state"
 import { Todo } from "./../../models/todo"
 

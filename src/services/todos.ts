@@ -1,4 +1,4 @@
-import { IStore } from "./../framework/store"
+import { IStore } from "viperx"
 import { IAppState } from "./state"
 import { AddTodoAsyncAction, DeleteTodoAsyncAction, ToggleTodoAsyncAction } from "./actions/todos"
 import { Todo } from "./../models/todo"
