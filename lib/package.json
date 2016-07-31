@@ -22,6 +22,7 @@
     "autoprefixer": "^6.3.7",
     "awesome-typescript-loader": "^1.1.1",
     "chunk-manifest-webpack-plugin": "^0.1.0",
+    "clean-webpack-plugin": "^0.1.10",
     "copy-webpack-plugin": "^3.0.1",
     "css-loader": "^0.14.5",
     "deep-freeze": "0.0.1",
