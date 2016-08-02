@@ -11,7 +11,23 @@ export interface ITodoAppProps {
     todoService: ITodoService;
 }
 
-export class TodoApp extends React.Component<ITodoAppProps, {}> {
+export interface ITodoAppState {
+    todos: Array<Todo>;
+}
+
+export class TodoApp extends React.Component<ITodoAppProps, ITodoAppState> {
+    
+    constructor() {
+        super();
+        this.state = { todos: [] };
+    }
+
+    componentDidMount() {
+        this.props.todoService.fetchTodos().then((todos: Array<Todo>) => {
+            this.setState({ todos: todos });
+        });
+    }
+    
     render() {
         var todoService = this.props.todoService;
         return (

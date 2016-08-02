@@ -4,13 +4,15 @@
     "module": "commonjs",
     "noImplicitAny": true,
     "removeComments": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "ignoreDups": true
   },
   "files": [
     "typings/index.d.ts",
     "../components/app.ts"    
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "typings"
   ]
 }

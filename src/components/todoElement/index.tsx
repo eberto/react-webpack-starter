@@ -11,11 +11,13 @@ export interface ITodoElementProps {
 
 export class TodoElement extends React.Component<ITodoElementProps, {}> {
     render() {
-        var style: any = this.props.todo.completed? { textDecoration: 'line-through' } : {};
+        var cursorStyle = { cursor : "pointer" };
+        var style: any = this.props.todo.completed? { textDecoration: "line-through" } : {};
+        style.cursor = "pointer";
         return (
             <li>
                 <span style={style} onClick={this.handleToggle.bind(this)}>{this.props.todo.text}</span> &nbsp;
-                <span onClick={this.handleDelete.bind(this)}>[x]</span>
+                <span style={cursorStyle} onClick={this.handleDelete.bind(this)}>[x]</span>
             </li>
         );
     }

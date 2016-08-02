@@ -1,6 +1,7 @@
 /// <reference path="../../../lib/typings/index.d.ts" />
 
 import { Promise } from "es6-promise"
+import * as fetchIE8 from "fetch-ie8"
 import { IAction, IAsyncAction, IState } from "viperx"
 import { IAppState } from "./../state"
 import { Todo } from "./../../models/todo"
@@ -12,7 +13,7 @@ export class AddTodoAction implements IAction {
     }
 
     public execute(state: IAppState): IState {
-        state.todos.push(new Todo(state.lastTodoId++, this.text, false));
+        state.todos.push(new Todo(100, this.text, false));
         return state;
     }
 }
@@ -20,21 +21,23 @@ export class AddTodoAction implements IAction {
 export class AddTodoAsyncAction implements IAsyncAction {
 
     constructor(private text: string) {
-        this.text = text;
     }
 
-    public execute(state: IAppState, resolve: (value?: IState) => void, reject: (errors?: any) => void): void {
-
-        var promise = Promise.resolve(++state.lastTodoId);  //TODO: call post with fetch.
-
-        promise.then((newId: number) => {
-            state.todos.push(new Todo(newId, this.text, false));
-            state.lastTodoId = newId;
+    public execute(state: IAppState, resolve: (value?: IState) => void, reject: (errors?: any) => void = null): void {
+        var todo = new Todo(0, this.text, false);
+        fetch("api/todos", { 
+            method: "POST", 
+            headers: { 
+                "Content-Type": "application/json"
+            }, 
+            body: JSON.stringify(todo) 
+        })
+        .then((response: any) => response.json())
+        .then((addedTodo: Todo) => {
+            state.todos.push(addedTodo);
             resolve(state);
         })
-        .catch((errors: any) => {
-            reject(errors);
-        });
+        .catch((errors: any) => reject(errors));
     }
 }
 
@@ -44,43 +47,53 @@ export class DeleteTodoAsyncAction implements IAsyncAction {
     }
 
     public execute(state: IAppState, resolve: (value?: IState) => void, reject: (errors?: any) => void): void {
-
-        var promise = Promise.resolve({});  //TODO: call post with fetch.
-
-        promise.then(() => {
-            var self = this;
-            var todoToDelete = state.todos.filter((t: Todo) => {
-                return t.id == self.todoId;
-            })[0];
-            var todoIndex = state.todos.indexOf(todoToDelete);
-            state.todos.splice(todoIndex, 1);
+        fetch("api/todos/" + this.todoId, { 
+            method: "DELETE", 
+            headers: { 
+                "Content-Type": "application/json"
+            }
+        })
+        .then((response: any) => response.json())
+        .then(() => {
+            state.todos = state.todos.filter((t: Todo) => t.id !== this.todoId);
             resolve(state);
         })
-        .catch((errors: any) => {
-            reject(errors);
-        });
+        .catch((errors: any) => reject(errors));
     }
 }
 
 export class ToggleTodoAsyncAction implements IAsyncAction {
 
-    public constructor(private todo: Todo) {
+    constructor(private todo: Todo) {
     }
 
     public execute(state: IAppState, resolve: (value?: IState) => void, reject: (errors?: any) => void): void {
-
-        var promise = Promise.resolve({});  //TODO: call post with fetch.
-
-        promise.then(() => {
-            var self = this;
-            var todoToToggle = state.todos.filter((t: Todo) => {
-                return t.id == self.todo.id;
-            })[0];
-            todoToToggle.completed = !todoToToggle.completed;
+        this.todo.completed = !this.todo.completed;
+        fetch("api/todos/" + this.todo.id, { 
+            method: "PUT", 
+            headers: { 
+                "Content-Type": "application/json"
+            }, 
+            body: JSON.stringify(this.todo) 
+        })
+        .then((response: any) => response.json())
+        .then((toggledTodo: Todo) => {
+            state.todos = state.todos.map((t: Todo) => t.id != this.todo.id? t : toggledTodo);
             resolve(state);
         })
-        .catch((errors: any) => {
-            reject(errors);
-        });
+        .catch((errors: any) => reject(errors));
+    }
+}
+
+export class FetchTodosAsyncAction implements IAsyncAction {
+
+    public execute(state: IAppState, resolve: (value?: IState) => void, reject: (errors?: any) => void): void {
+        fetch("api/todos")
+        .then((response: any) => response.json())
+        .then((todos: Array<Todo>) => {
+            state.todos = todos;
+            resolve(state);
+        })
+        .catch((errors: any) => reject(errors));
     }
 }

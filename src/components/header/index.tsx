@@ -21,7 +21,7 @@ export class Header extends React.Component<IHeaderProps, IHeaderState> {
     render() {
         return (
             <div>
-                <input type="text" onChange={this.handleInputChange.bind(this)} />
+                <input type="text" onChange={this.handleInputChange.bind(this)} onKeyDown={this.handleKeyPress.bind(this)} />
                 <button onClick={() => { this.props.onAddTodo(this.state.newTodoText)} }>Add Todo</button>
             </div>
         );
@@ -29,5 +29,11 @@ export class Header extends React.Component<IHeaderProps, IHeaderState> {
 
     handleInputChange(event: any) {
         this.setState({newTodoText: event.target.value});
+    }
+
+    handleKeyPress(event: any) {
+        if(event.keyCode === 13) {
+            this.props.onAddTodo(this.state.newTodoText)
+        }
     }
 }
