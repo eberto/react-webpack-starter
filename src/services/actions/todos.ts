@@ -1,6 +1,8 @@
 /// <reference path="../../../lib/typings/index.d.ts" />
+/// <reference path="../../../lib/typings/index.locals.d.ts" />
 
-import { Promise } from "es6-promise"
+import * as Promise from "bluebird"
+import * as FetchBluebird from "fetch-bluebird"
 import { IAction, IAsyncAction, IState } from "viperx"
 import { IAppState } from "./../state"
 import { Todo } from "./../../models/todo"
@@ -57,7 +59,7 @@ export class DeleteTodoAsyncAction implements IAsyncAction {
             state.todos = state.todos.filter((t: Todo) => t.id !== this.todoId);
             resolve(state);
         })
-        .catch((errors: any) => reject(errors));
+        .catch((errors: any) => reject(errors));        
     }
 }
 

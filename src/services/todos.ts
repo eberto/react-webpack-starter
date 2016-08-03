@@ -1,5 +1,6 @@
 import { IStore } from "viperx"
-import { Promise } from "es6-promise"
+import * as Promise from "bluebird"
+import * as FetchBluebird from "fetch-bluebird"
 import { IAppState } from "./state"
 import { AddTodoAsyncAction, DeleteTodoAsyncAction, ToggleTodoAsyncAction, FetchTodosAsyncAction } from "./actions/todos"
 import { Todo } from "./../models/todo"
@@ -34,7 +35,7 @@ export class TodoService implements ITodoService {
     }
 
     public addTodo(text: string): Promise<IAppState> {
-        return this.store.dispatchAsync((state: IAppState, resolve: (state?: IAppState) => void, reject: (errors?: any) => void) => {
+        return <Promise<IAppState>>this.store.dispatchAsync((state: IAppState, resolve: (state?: IAppState) => void, reject: (errors?: any) => void) => {
             var todo = new Todo(0, text, false);
             fetch("api/todos", { 
                 method: "POST", 
@@ -53,10 +54,10 @@ export class TodoService implements ITodoService {
     }
 
     public deleteTodo(todoId: number): Promise<IAppState> {
-        return this.store.dispatchAsync(new DeleteTodoAsyncAction(todoId));
+        return <Promise<IAppState>>this.store.dispatchAsync(new DeleteTodoAsyncAction(todoId));
     }
 
     public toggleTodo(todo: Todo): Promise<IAppState> {
-        return this.store.dispatchAsync(new ToggleTodoAsyncAction(todo));
+        return <Promise<IAppState>>this.store.dispatchAsync(new ToggleTodoAsyncAction(todo));
     }
 }

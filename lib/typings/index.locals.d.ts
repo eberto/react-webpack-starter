@@ -1,0 +1,1 @@
+/// <reference path="locals/fetch-bluebird.d.ts" />
