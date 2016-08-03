@@ -45,7 +45,7 @@ export class TodoService implements ITodoService {
             })
             .then((response: any) => response.json())
             .then((addedTodo: Todo) => {
-                state.todos.push(addedTodo);
+                state.todos.push(Todo.copyFrom(addedTodo));
                 resolve(state);
             })
             .catch((errors: any) => reject(errors));

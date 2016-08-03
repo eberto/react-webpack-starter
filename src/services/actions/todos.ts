@@ -1,7 +1,6 @@
 /// <reference path="../../../lib/typings/index.d.ts" />
 
 import { Promise } from "es6-promise"
-import * as fetchIE8 from "fetch-ie8"
 import { IAction, IAsyncAction, IState } from "viperx"
 import { IAppState } from "./../state"
 import { Todo } from "./../../models/todo"
@@ -34,7 +33,7 @@ export class AddTodoAsyncAction implements IAsyncAction {
         })
         .then((response: any) => response.json())
         .then((addedTodo: Todo) => {
-            state.todos.push(addedTodo);
+            state.todos.push(Todo.copyFrom(addedTodo));
             resolve(state);
         })
         .catch((errors: any) => reject(errors));
@@ -78,7 +77,7 @@ export class ToggleTodoAsyncAction implements IAsyncAction {
         })
         .then((response: any) => response.json())
         .then((toggledTodo: Todo) => {
-            state.todos = state.todos.map((t: Todo) => t.id != this.todo.id? t : toggledTodo);
+            state.todos = state.todos.map((t: Todo) => t.id != this.todo.id? t : Todo.copyFrom(toggledTodo));
             resolve(state);
         })
         .catch((errors: any) => reject(errors));

@@ -2,6 +2,7 @@ import { ICloner, IStore, Store, cloner, notifier } from "viperx"
 import { IAppState } from "./../services/state"
 import { ViewRenderer } from "./../components/app/renderer"
 import { ITodoService, TodoService } from "./../services/todos"
+import * as fetch from "isomorphic-fetch"
 
 var store: IStore = new Store({ todos: [], lastTodoId: 0 }, cloner, notifier);
 

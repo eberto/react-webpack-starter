@@ -11,11 +11,6 @@
       "completed": true
     },
     {
-      "id": 11,
-      "text": "two",
-      "completed": false
-    },
-    {
       "id": 17,
       "text": "otro mas",
       "completed": false
@@ -63,7 +58,7 @@
     {
       "id": 31,
       "text": "lalalaloloeee",
-      "completed": false
+      "completed": true
     },
     {
       "id": 32,
@@ -91,33 +86,13 @@
       "completed": false
     },
     {
-      "id": 38,
-      "text": "lalalaloloeeeaaaeeuu",
-      "completed": false
-    },
-    {
-      "id": 39,
-      "text": "todo 2",
-      "completed": false
-    },
-    {
-      "id": 40,
-      "text": "todo 2",
-      "completed": false
-    },
-    {
-      "id": 41,
-      "text": "todo 2",
-      "completed": false
-    },
-    {
-      "id": 42,
-      "text": "todo 2",
-      "completed": false
-    },
-    {
       "id": 43,
       "text": "nuevo",
+      "completed": true
+    },
+    {
+      "id": 44,
+      "text": "another one",
       "completed": false
     }
   ]
