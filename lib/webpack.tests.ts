@@ -1,7 +1,4 @@
-/// <reference path="typings/index.d.ts" />
-
 import "../tests/services/todos.spec.ts";
-
 
 declare var module: any;
 

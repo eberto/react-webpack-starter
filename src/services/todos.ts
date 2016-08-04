@@ -18,15 +18,11 @@ export class TodoService implements ITodoService {
     public constructor(private store: IStore<IAppState>) {
     }
 
-    public fetchTodos(cache: boolean = true): Promise<Array<Todo>> {
+    public fetchTodos(): Promise<Array<Todo>> {
         return new Promise<Array<Todo>>((resolve: (value?: Array<Todo>) => void, reject: (errors?: any) => void) => {
-            var todos = this.store.getState<IAppState>().todos;
-            if(todos.length === 0 || cache === false) {
-                this.store.dispatchAsync(new FetchTodosAsyncAction()).then((state: IAppState) => resolve(state.todos));
-            }
-            else {
-                resolve(todos);
-            }
+            this.store.dispatchAsync(new FetchTodosAsyncAction())
+            .then((state: IAppState) => resolve(state.todos))
+            .catch((errors?: any) => reject(errors));
         });
     }
 
