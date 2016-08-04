@@ -7,14 +7,11 @@
   "private": true,
   "main": "webpack.config.js",
   "scripts": {
-    "start": "./node_modules/.bin/npm-run-all --parallel start-client start-server",
-    "start-prod": "node server.prod.js",
-    "start-client": "node server.js",
-    "start-server": "./node_modules/.bin/json-server db.json",
+    "start": "./node_modules/.bin/npm-run-all --parallel start-client-dev start-server-dev",
+    "start-client-dev": "node server.js",
+    "start-server-dev": "./node_modules/.bin/json-server db.json",
     "build": "./node_modules/.bin/npm-run-all webpack-build-vendor webpack-build",
-    "build-prod": "./node_modules/.bin/npm-run-all webpack-build-vendor webpack-build-prod",
     "webpack-build": "./node_modules/.bin/webpack --display-chunks",
-    "webpack-build-prod": "./node_modules/.bin/webpack --display-chunks --config webpack.config.prod.js",
     "webpack-build-vendor": "./node_modules/.bin/webpack --display-chunks --config webpack.config.vendor.js",
     "test": "./node_modules/.bin/karma start",
     "postinstall": "./node_modules/.bin/typings install"
