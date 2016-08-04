@@ -2,7 +2,6 @@ import { IStore, Store } from "viperx"
 import { IAppState } from "./../../models/state"
 import { ViewRenderer } from "./../../components/app/renderer"
 import { ITodoService, TodoService } from "./../../services/todos"
-import * as fetch from "isomorphic-fetch"
 
 var store = new Store<IAppState>({ todos: [] });
 
