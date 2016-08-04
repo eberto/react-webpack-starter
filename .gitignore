@@ -1,6 +1,7 @@
 node_modules
-/lib/typings
+/lib/typings/globals
+/lib/typings/index.d.ts
 /static
 /.idea
 /.vscode
-/lib/*.log
+*.log
