@@ -1,34 +1,19 @@
 {
   "todos": [
     {
-      "text": "six",
-      "completed": false,
+      "text": "Learn React Js.",
+      "completed": true,
       "id": 6
     },
     {
       "id": 8,
-      "text": "nine",
+      "text": "Make object oriented store",
       "completed": true
     },
     {
       "id": 31,
-      "text": "lalalaloloeee",
+      "text": "Write blog.",
       "completed": true
-    },
-    {
-      "id": 33,
-      "text": "lalalaloloeee",
-      "completed": true
-    },
-    {
-      "id": 36,
-      "text": "lalalaloloeeeaaa",
-      "completed": false
-    },
-    {
-      "id": 43,
-      "text": "nuevo",
-      "completed": false
     }
   ]
 }
