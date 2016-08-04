@@ -1,7 +1,7 @@
 /// <reference path="./../../lib/typings/index.d.ts"/>
 
-import { IStore, IStateNotifier, Store, StateNotifier, cloner } from "viperx"
-import { IAppState } from "./../../src/services/state"
+import { IStore, Store } from "viperx"
+import { IAppState } from "./../../src/models/state"
 import { Todo } from "./../../src/models/todo"
 import { ITodoService, TodoService } from "./../../src/services/todos"
 import { AddTodoAsyncAction, DeleteTodoAsyncAction, ToggleTodoAsyncAction } from "./../../src/services/actions/todos"
@@ -9,13 +9,12 @@ import * as fetchMock from "fetch-mock"
 
 describe("TodoService", () => {
 
-    var store: IStore;
+    var store: IStore<IAppState>;
     var todoService: ITodoService;
 
     beforeEach(() => {
         var initialState: IAppState = { todos: [new Todo(1, "todo 1", false)] };
-        var notifier: IStateNotifier = new StateNotifier();
-        store = new Store(initialState, cloner, notifier);
+        store = new Store(initialState);
         todoService = new TodoService(store);       
         spyOn(store, "dispatchAsync").and.callThrough();
     });

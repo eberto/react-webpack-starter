@@ -28,11 +28,6 @@
     {
       "id": 43,
       "text": "nuevo",
-      "completed": true
-    },
-    {
-      "id": 44,
-      "text": "another one",
       "completed": false
     }
   ]

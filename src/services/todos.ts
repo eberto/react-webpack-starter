@@ -1,7 +1,7 @@
 import { IStore } from "viperx"
 import * as Promise from "bluebird"
 import * as FetchBluebird from "fetch-bluebird"
-import { IAppState } from "./state"
+import { IAppState } from "./../models/state"
 import { AddTodoAsyncAction, DeleteTodoAsyncAction, ToggleTodoAsyncAction, FetchTodosAsyncAction } from "./actions/todos"
 import { Todo } from "./../models/todo"
 
@@ -15,7 +15,7 @@ export interface ITodoService {
 
 export class TodoService implements ITodoService {
 
-    public constructor(private store: IStore) {
+    public constructor(private store: IStore<IAppState>) {
     }
 
     public fetchTodos(cache: boolean = true): Promise<Array<Todo>> {

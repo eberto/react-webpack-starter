@@ -4,22 +4,22 @@
 import * as Promise from "bluebird"
 import * as FetchBluebird from "fetch-bluebird"
 import { IAction, IAsyncAction, IState } from "viperx"
-import { IAppState } from "./../state"
+import { IAppState } from "./../../models/state"
 import { Todo } from "./../../models/todo"
 
-export class AddTodoAction implements IAction {
+export class AddTodoAction implements IAction<IAppState> {
 
     constructor(private text: string) {
         this.text = text;
     }
 
-    public execute(state: IAppState): IState {
+    public execute(state: IAppState): IAppState {
         state.todos.push(new Todo(100, this.text, false));
         return state;
     }
 }
 
-export class AddTodoAsyncAction implements IAsyncAction {
+export class AddTodoAsyncAction implements IAsyncAction<IAppState> {
 
     constructor(private text: string) {
     }
@@ -42,7 +42,7 @@ export class AddTodoAsyncAction implements IAsyncAction {
     }
 }
 
-export class DeleteTodoAsyncAction implements IAsyncAction {
+export class DeleteTodoAsyncAction implements IAsyncAction<IAppState> {
 
     constructor(private todoId: number) {
     }
@@ -63,7 +63,7 @@ export class DeleteTodoAsyncAction implements IAsyncAction {
     }
 }
 
-export class ToggleTodoAsyncAction implements IAsyncAction {
+export class ToggleTodoAsyncAction implements IAsyncAction<IAppState> {
 
     constructor(private todo: Todo) {
     }
@@ -86,7 +86,7 @@ export class ToggleTodoAsyncAction implements IAsyncAction {
     }
 }
 
-export class FetchTodosAsyncAction implements IAsyncAction {
+export class FetchTodosAsyncAction implements IAsyncAction<IAppState> {
 
     public execute(state: IAppState, resolve: (value?: IState) => void, reject: (errors?: any) => void): void {
         fetch("api/todos")

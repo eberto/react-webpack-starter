@@ -1,10 +1,10 @@
 {
   "globalDependencies": {
     "bluebird": "registry:dt/bluebird#2.0.0+20160701023356",
-    "fetch-mock": "registry:dt/fetch-mock#5.0.0+20160724065250",
     "isomorphic-fetch": "registry:dt/isomorphic-fetch#0.0.0+20160524142046",
     "jasmine": "registry:dt/jasmine#2.2.0+20160621224255",
     "jquery": "registry:dt/jquery#1.10.0+20160620094458",
+    "lodash": "registry:dt/lodash#4.14.0+20160802150749",
     "react": "registry:dt/react#0.14.0+20160630100702",
     "react-addons-test-utils": "registry:dt/react-addons-test-utils#0.14.0+20160427035638",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040"
