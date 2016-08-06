@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
 import { ITodoService } from "./../../services/todos"
 import { IStateNotifier, Renderer } from "viperx"
 import { TodoApp } from "./../todoApp"
@@ -15,7 +15,8 @@ export class ViewRenderer extends Renderer {
 
     public render(): void {
         ReactDOM.render(
-          <TodoApp todoService={this.todoService} />, 
-          this.getRootDiv());
+            <MuiThemeProvider>  
+                <TodoApp todoService={this.todoService} />
+            </MuiThemeProvider>, this.getRootDiv());
     }
 }

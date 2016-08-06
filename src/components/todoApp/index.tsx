@@ -1,6 +1,7 @@
 /// <reference path="../../../lib/typings/index.d.ts" />
 
 import * as React from "react";
+import Paper from "material-ui/Paper"
 
 import { ITodoService } from "./../../services/todos"
 import { Todo } from "./../../models/todo";
@@ -30,11 +31,12 @@ export class TodoApp extends React.Component<ITodoAppProps, ITodoAppState> {
     
     render() {
         var todoService = this.props.todoService;
+        var style = { width: "422px", padding: "10px" }
         return (
-            <div>
-                <Header onAddTodo={todoService.addTodo.bind(todoService)} />
+            <Paper style={style} zDepth={1}>
+                <Header style={{ marginBottom: "40px" }} onAddTodo={todoService.addTodo.bind(todoService)} />
                 <Todos todos={todoService.getTodos()} onDelete={todoService.deleteTodo.bind(todoService)} onToggle={todoService.toggleTodo.bind(todoService)} />
-            </div>
+            </Paper>
         );
     }
 }
