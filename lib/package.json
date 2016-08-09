@@ -9,7 +9,7 @@
   "scripts": {
     "start": "./node_modules/.bin/npm-run-all --parallel start-client-dev start-server-dev",
     "start-client-dev": "node server.js",
-    "start-server-dev": "./node_modules/.bin/json-server --delay 2000 db.json",
+    "start-server-dev": "./node_modules/.bin/json-server --delay 2000 db.js",
     "build": "./node_modules/.bin/npm-run-all webpack-build-vendor webpack-build",
     "webpack-build": "./node_modules/.bin/webpack --display-chunks",
     "webpack-build-vendor": "./node_modules/.bin/webpack --display-chunks --config webpack.config.vendor.js",
@@ -26,6 +26,7 @@
     "copy-webpack-plugin": "^3.0.1",
     "css-loader": "^0.14.5",
     "extract-text-webpack-plugin": "^1.0.1",
+    "faker": "^3.1.0",
     "fetch-bluebird": "^1.0.3",
     "fetch-mock": "^5.0.5",
     "file-loader": "^0.9.0",
