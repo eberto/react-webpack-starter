@@ -31,11 +31,11 @@ export class TodoApp extends React.Component<ITodoAppProps, ITodoAppState> {
     
     render() {
         var todoService = this.props.todoService;
-        var style = { width: "422px", padding: "10px" }
+        var style = { width: "422px", padding: "10px", marginLeft: "auto", marginRight: "auto", marginTop: "80px" }
         return (
-            <Paper style={style} zDepth={1}>
-                <Header style={{ marginBottom: "40px" }} onAddTodo={todoService.addTodo.bind(todoService)} />
-                <Todos todos={todoService.getTodos()} onDelete={todoService.deleteTodo.bind(todoService)} onToggle={todoService.toggleTodo.bind(todoService)} />
+            <Paper style={style} zDepth={3}>
+                <Header style={{ marginBottom: "40px" }} onAddTodo={todoService.addTodo.bind(todoService)} isAdding={todoService.isAdding()}/>
+                <Todos todos={todoService.getTodos()} onDelete={todoService.deleteTodo.bind(todoService)} onToggle={todoService.toggleTodo.bind(todoService)} isFetching={todoService.isFetching()} />
             </Paper>
         );
     }

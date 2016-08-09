@@ -1,13 +1,14 @@
 /// <reference path="../../../lib/typings/index.d.ts" />
 
 import * as React from "react";
-import {List, ListItem} from "material-ui/List"
-import Checkbox from "material-ui/Checkbox"
+import {List} from "material-ui/List"
+import CircularProgress from "material-ui/CircularProgress"
 import { Todo } from "./../../models/todo";
 import { TodoElement } from "./../todoElement"
 
 export interface ITodosProps {
     todos: Array<Todo>;
+    isFetching: boolean;
     onDelete: (todoId: number) => void;
     onToggle: (todo: Todo) => void;
 }
@@ -15,14 +16,13 @@ export interface ITodosProps {
 export class Todos extends React.Component<ITodosProps, {}> {
     render() {
         return (
-            <List>
-                {this.props.todos.map((todo: Todo) =>
-                    // <TodoElement todo={todo} key={todo.id} onDelete={this.props.onDelete} onToggle={this.props.onToggle} />
-                    <ListItem key={todo.id}>
-                        <Checkbox label={todo.text} labelPosition="left" defaultChecked={todo.completed} onCheck={this.props.onToggle} />
-                    </ListItem>
-                )}
-            </List>
+            this.props.isFetching?
+                <CircularProgress style={{display: "block", marginLeft: "auto", marginRight: "auto"}} size={1}/> :
+                <List>
+                    {this.props.todos.map((todo: Todo) => 
+                        <TodoElement key={todo.id} todo={todo} onToggle={this.props.onToggle} onDelete={this.props.onDelete} />
+                    )}
+                </List>
         );
     }
 }

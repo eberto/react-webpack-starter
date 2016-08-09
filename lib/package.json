@@ -9,7 +9,7 @@
   "scripts": {
     "start": "./node_modules/.bin/npm-run-all --parallel start-client-dev start-server-dev",
     "start-client-dev": "node server.js",
-    "start-server-dev": "./node_modules/.bin/json-server db.json",
+    "start-server-dev": "./node_modules/.bin/json-server --delay 2000 db.json",
     "build": "./node_modules/.bin/npm-run-all webpack-build-vendor webpack-build",
     "webpack-build": "./node_modules/.bin/webpack --display-chunks",
     "webpack-build-vendor": "./node_modules/.bin/webpack --display-chunks --config webpack.config.vendor.js",
@@ -56,7 +56,7 @@
     "typescript": "^1.8.10",
     "typings": "^1.3.1",
     "url-loader": "^0.5.7",
-    "viperx": "^1.1.1",
+    "viperx": "^1.1.3",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1",
     "webpack-manifest-plugin": "^1.0.1",

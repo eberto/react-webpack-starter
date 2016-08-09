@@ -1,4 +1,6 @@
 export class Todo {
+    public isToggling: boolean;
+    public isDeleting: boolean;
     constructor(
         public id: number,
         public text: string,
