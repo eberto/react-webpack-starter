@@ -3,10 +3,9 @@
     "bluebird": "registry:dt/bluebird#2.0.0+20160701023356",
     "isomorphic-fetch": "registry:dt/isomorphic-fetch#0.0.0+20160524142046",
     "jasmine": "registry:dt/jasmine#2.2.0+20160621224255",
-    "jquery": "registry:dt/jquery#1.10.0+20160620094458",
     "lodash": "registry:dt/lodash#4.14.0+20160802150749",
     "material-ui": "registry:dt/material-ui#0.15.1+20160720000941",
-    "react": "registry:dt/react#0.14.0+20160630100702",
+    "react": "registry:dt/react#0.14.0+20160805125551",
     "react-addons-test-utils": "registry:dt/react-addons-test-utils#0.14.0+20160427035638",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
     "react-tap-event-plugin": "registry:dt/react-tap-event-plugin#0.0.0+20160602142434"

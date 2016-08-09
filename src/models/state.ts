@@ -1,9 +1,9 @@
 import { IState } from "viperx"
-import { Todo } from "./../models/todo"
+import { Client } from "./../models/client"
 
 export interface IAppState extends IState {
     
-    todos: Array<Todo>;
+    clients: Array<Client>;
     isFetching?: boolean;
     isAdding?: boolean;
 }

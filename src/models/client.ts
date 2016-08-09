@@ -16,13 +16,14 @@ export class Client {
         public age: number,
         public avatar: string) {}
 
-    public static copyFrom(other: Client) {
+    public static copyFrom(other: any) {
+        var birthDate = typeof other.birthDate === "Date"? other.birthDate : new Date(other.birthDate);
         return new Client(
             other.id, 
             other.firstName, 
             other.lastName,
             other.identification,
-            other.birthDate,
+            birthDate,
             other.address,
             other.phone1,
             other.phone2,
