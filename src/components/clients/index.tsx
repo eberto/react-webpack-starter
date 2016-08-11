@@ -1,81 +1,79 @@
 /// <reference path="../../../lib/typings/index.d.ts" />
 
 import * as React from "react";
+import { assign } from "lodash"
 import * as format from "date-format"
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from "material-ui/Table"
+import Paper from "material-ui/Paper"
 import CircularProgress from "material-ui/CircularProgress"
 import { Client } from "./../../models/client"
 import { ClientItem } from "./../clientItem"
 
 export interface IClientsProps {
+    className?: string;
+    style?: any;
     clients: Array<Client>;
     isFetching: boolean;
     onDelete: (todoId: number) => void;
 }
 
 export class Clients extends React.Component<IClientsProps, {}> {
+    tabColumnStyle(minWidthPixels: number, percent?: number): any {
+        //var percentValue = percent? percent.toString() + "%" : "";
+        var cellStyle = {
+            minWidth: minWidthPixels.toString() + "px",
+            paddingLeft: "5px",
+            paddingRight: "5px",
+            lineHeight: "48px"
+        }
+        return /*percent? assign(cellStyle, { flexBasis: percentValue, maxWidth: percentValue }) :*/ cellStyle;
+    }
     render() {
         var tableStyle = {
-            //width: "100%"
-            border: "1px solid red"
         };
-        var nameStyle = {
-            //width: "8%"
+        var borderColStyle = {
+            paddingLeft: 20,
+            paddingRight: 20
         };
-        var lastNameStyle = {
-            //width: "10%"
-        };
-        var identifStyle = {
-            //width: "70px",
-        };
-        var birthDateStyle = {
-            //width: "67px"
-        };
-        var ageStyle = {
-            //width: "23px"
-        };
-        var addressStyle = {
-            //width: "150px"
-        };
-        var phoneStyle = {
-            //width: "96px"
-        };
-        var emailStyle = {
-            //width: "200px"
+        var colStyle = {
+            paddingLeft: 5,
+            paddingRight: 5
         };
         return (
-            this.props.isFetching?
+            <Paper className={this.props.className} style={this.props.style} zDepth={3}>
+                {this.props.isFetching?
                 <CircularProgress style={{display: "block", marginLeft: "auto", marginRight: "auto"}} size={1}/> :
-                <Table className="row" style={tableStyle}>  
-                    <TableHeader className="row">
-                        <TableRow className="row">
-                            <TableHeaderColumn className="col s1" style={nameStyle}>Nombre</TableHeaderColumn>
-                            <TableHeaderColumn className="col s1" style={lastNameStyle}>Apellidos</TableHeaderColumn>
-                            <TableHeaderColumn className="col s1" style={identifStyle}>RUC / CI</TableHeaderColumn>
-                            <TableHeaderColumn className="col s1" style={birthDateStyle}>Nacimiento</TableHeaderColumn>
-                            <TableHeaderColumn className="col s1" style={ageStyle}>Edad</TableHeaderColumn>
-                            <TableHeaderColumn className="col s1" style={addressStyle}>Dirección</TableHeaderColumn>
-                            <TableHeaderColumn className="col s1" style={phoneStyle}>Teléfono Principal</TableHeaderColumn>
-                            <TableHeaderColumn className="col s1" style={emailStyle}>Correo</TableHeaderColumn>
-                            <TableHeaderColumn className="col s4" >Acciones</TableHeaderColumn>
+                <Table style={tableStyle}>
+                    <TableHeader className="container" displaySelectAll={false} adjustForCheckbox={false}>
+                         <TableRow className="row">
+                            <TableHeaderColumn style={borderColStyle} className="col-xs-3 col-sm-2 col-md-1 col-lg-1">Nombre</TableHeaderColumn>
+                            <TableHeaderColumn style={colStyle} className="col-xs-3">Apellido</TableHeaderColumn>
+                            <TableHeaderColumn style={colStyle} className="col-xs-2 col-sm-2 col-md-2 col-lg-1 hide-col-xs">RUC / CI</TableHeaderColumn>
+                            <TableHeaderColumn style={colStyle} className="col-lg-1 hide-col-md">Nacimiento</TableHeaderColumn>
+                            <TableHeaderColumn style={colStyle} className="col-sm-1 hide-col-xs">Edad</TableHeaderColumn>
+                            <TableHeaderColumn style={colStyle} className="col-xs-2 hide-col-sm">Dirección</TableHeaderColumn>
+                            <TableHeaderColumn style={colStyle} className="col-xs-4">Teléfono</TableHeaderColumn>
+                            <TableHeaderColumn style={colStyle} className="col-xs-2 col-sm-3 col-md-2 col-lg-2 hide-col-xs">Correo</TableHeaderColumn>
+                            <TableHeaderColumn style={borderColStyle} className="col-xs-2">Acciones</TableHeaderColumn>
                         </TableRow>
-                    </TableHeader>                  
-                    <TableBody className="row">
+                    </TableHeader>
+                    <TableBody className="container" displayRowCheckbox={false} deselectOnClickaway={true} showRowHover={true} stripedRows={true}>
                         {this.props.clients.map((client: Client) => 
                             <TableRow className="row" key={client.id}>
-                                <TableRowColumn className="col l1" style={nameStyle}>{client.firstName}</TableRowColumn>
-                                <TableRowColumn className="col l1" style={lastNameStyle}>{client.lastName}</TableRowColumn>
-                                <TableRowColumn className="col s1" style={identifStyle}>{client.identification}</TableRowColumn>
-                                <TableRowColumn className="col s1" style={birthDateStyle}>{format.asString("dd/MM/yyyy", client.birthDate)}</TableRowColumn>
-                                <TableRowColumn className="col s1" style={ageStyle}>{client.age}</TableRowColumn>
-                                <TableRowColumn className="col s1" style={addressStyle}>{client.address}</TableRowColumn>
-                                <TableRowColumn className="col s1" style={phoneStyle}>{client.phone1}</TableRowColumn>
-                                <TableRowColumn className="col s1" style={emailStyle}>{client.email}</TableRowColumn>
-                                <TableRowColumn className="col <s4></s4>">Actions</TableRowColumn>
+                                <TableRowColumn style={borderColStyle} className="col-xs-3 col-sm-2 col-md-1 col-lg-1">{client.firstName}</TableRowColumn>
+                                <TableRowColumn style={colStyle} className="col-xs-3">{client.lastName}</TableRowColumn>
+                                <TableRowColumn style={colStyle} className="col-xs-2 col-sm-2 col-md-2 col-lg-1 hide-col-xs">{client.identification}</TableRowColumn>
+                                <TableRowColumn style={colStyle} className="col-lg-1 hide-col-md">{format.asString("dd/MM/yyyy", client.birthDate)}</TableRowColumn>
+                                <TableRowColumn style={colStyle} className="col-sm-1 hide-col-xs">{client.age}</TableRowColumn>
+                                <TableRowColumn style={colStyle} className="col-xs-2 hide-col-sm">{client.address}</TableRowColumn>
+                                <TableRowColumn style={colStyle} className="col-xs-4"><span className="hide-inline-xs">(+593)</span>{client.phone1}</TableRowColumn>
+                                <TableRowColumn style={colStyle} className="col-xs-2 col-sm-3 col-md-2 col-lg-2 hide-col-xs">{client.email}</TableRowColumn>
+                                <TableRowColumn style={borderColStyle} className="col-xs-2">Actions</TableRowColumn>
                             </TableRow>
                         )}
                     </TableBody>
-                </Table>
-        );
+                </Table>}
+            </Paper>
+        );        
     }
 }

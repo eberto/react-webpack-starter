@@ -1,5 +1,6 @@
 import "./styles/roboto-font.css"
-import "./styles/materialize-grid.scss"
+import "./styles/flexboxgrid.css"
+
 import { IStore, Store } from "viperx"
 import { IAppState } from "./../../models/state"
 import { Client } from "./../../models/client"
