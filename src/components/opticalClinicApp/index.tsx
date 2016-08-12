@@ -29,7 +29,7 @@ export class OpticalClinicApp extends React.Component<IOpticalClinicAppProps, IO
     
     render() {
         var clientsService = this.props.clientsService;
-        var clientsStyle = { padding: "20px", marginLeft: "auto", marginRight: "auto", marginTop: "80px"/*, border: "1px solid black"*/ }
+        var clientsStyle = { marginLeft: "auto", marginRight: "auto", marginTop: "80px", width: "90%"/*, border: "1px solid black"*/ }
         return (
         	<Clients style={clientsStyle} clients={clientsService.getAll()} onDelete={clientsService.delete.bind(clientsService)} isFetching={clientsService.isFetching()} />
         );

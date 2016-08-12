@@ -1,5 +1,5 @@
-import "./styles/roboto-font.css"
-import "./styles/flexboxgrid.css"
+import "./styles/materialize.scss"
+import "./styles/materialize-overrides.scss"
 
 import { IStore, Store } from "viperx"
 import { IAppState } from "./../../models/state"
