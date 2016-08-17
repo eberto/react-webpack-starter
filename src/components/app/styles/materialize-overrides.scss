@@ -13,3 +13,51 @@
 .z-depth-5 {
     box-shadow: rgba(0, 0, 0, 0.298039) 0px 19px 60px, rgba(0, 0, 0, 0.219608) 0px 15px 20px;
 }
+
+body {
+    font-family: "Roboto", sans-serif !important;
+    font-size: 15px !important;
+}
+
+table {
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+tr {
+    border-bottom: 1px solid rgb(224, 224, 224);
+    color: rgba(0, 0, 0, 0.870588);
+    height: 48px;
+}
+
+tr.last-row {
+    border-bottom: none;
+}
+
+th, td {
+    font-family: "Roboto", sans-serif !important;
+    font-weight: normal;
+    height: 56px;
+    line-height: 24px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    color: rgb(158, 158, 158);
+    font-size: 12px;
+    padding-top: 16px !important;
+    padding-bottom: 14px !important;
+}
+
+td {
+    font-size: 13px;
+    height: 48px;
+    padding-top: 12px !important;
+    padding-bottom: 18px !important;
+}
+
+.last-row td {
+    height: 56px !important;
+}
+

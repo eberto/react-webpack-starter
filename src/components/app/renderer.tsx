@@ -15,7 +15,9 @@ export class ViewRenderer extends Renderer {
 
     public render(): void {
         ReactDOM.render(
-            <OpticalClinicApp clientsService={this.clientsService} />
+            <MuiThemeProvider>
+                <OpticalClinicApp clientsService={this.clientsService} />
+            </MuiThemeProvider>
             , this.getRootDiv());
     }
 }

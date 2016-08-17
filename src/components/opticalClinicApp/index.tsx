@@ -5,6 +5,7 @@ import * as React from "react"
 import { IClientsService } from "./../../services/clients"
 import { Client } from "./../../models/client";
 import { Clients } from "./../clients"
+import { Checkbox } from "./../material/Checkbox"
 
 export interface IOpticalClinicAppProps {
     clientsService: IClientsService;
@@ -29,9 +30,9 @@ export class OpticalClinicApp extends React.Component<IOpticalClinicAppProps, IO
     
     render() {
         var clientsService = this.props.clientsService;
-        var clientsStyle = { marginLeft: "auto", marginRight: "auto", marginTop: "80px", width: "90%"/*, border: "1px solid black"*/ }
+        var clientsStyle = { marginLeft: "auto", marginRight: "auto", padding: 24, marginTop: "80px", width: "90%", minWidth: 300/*, border: "1px solid black"*/ }
         return (
-        	<Clients style={clientsStyle} clients={clientsService.getAll()} onDelete={clientsService.delete.bind(clientsService)} isFetching={clientsService.isFetching()} />
+            <Clients style={clientsStyle} clients={clientsService.getAll()} onDelete={clientsService.delete.bind(clientsService)} isFetching={clientsService.isFetching()} />
         );
     }
 }

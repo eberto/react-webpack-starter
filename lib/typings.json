@@ -8,6 +8,7 @@
     "react": "registry:dt/react#0.14.0+20160805125551",
     "react-addons-test-utils": "registry:dt/react-addons-test-utils#0.14.0+20160427035638",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "react-measure": "registry:dt/react-measure#0.4.0+20160707075122",
     "react-tap-event-plugin": "registry:dt/react-tap-event-plugin#0.0.0+20160602142434"
   }
 }
