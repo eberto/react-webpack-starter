@@ -4,12 +4,9 @@ import "./styles/index.scss"
 
 import * as React from "react"
 import * as Measure from "react-measure"
-import { assign } from "lodash"
-import * as format from "date-format"
 import Checkbox from "material-ui/Checkbox"
 import Paper from "material-ui/Paper"
 import { Client } from "./../../models/client"
-import { ClientItem } from "./../clientItem"
 
 export interface IClientsProps {
     className?: string;
@@ -28,6 +25,8 @@ interface IColData {
     minVisibleContainerWidth?: number;
     headerText?: string;
     modelPropName?: string;
+    style?: Object;
+    isVisible?: boolean;
 }
 
 export class Clients extends React.Component<IClientsProps, IClientsState> {
@@ -44,25 +43,27 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
     }, {
         headerText: "RUC / CI",
         modelPropName: "identification",
-        width: 90
+        width: 90,
+        minVisibleContainerWidth: 442
     }, {
         headerText: "F. Nacimiento",
         width: 85,
-        minVisibleContainerWidth: 900
+        minVisibleContainerWidth: 1300
     }, {
         headerText: "Dirección",
         modelPropName: "address",
-        width: "25%"
+        width: "25%",
+        minVisibleContainerWidth: 950
     }, {
         headerText: "Teléfono 1",
         modelPropName: "phone1",
         width: 70,
-        minVisibleContainerWidth: 900
+        minVisibleContainerWidth: 1300
     }, {
         headerText: "Teléfono 2",
         modelPropName: "phone2",
         width: 70,
-        minVisibleContainerWidth: 900
+        minVisibleContainerWidth: 1300
     }, {
         headerText: "Tel. Móvil",
         modelPropName: "mobilePhone",
@@ -70,11 +71,13 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
     }, {
         headerText: "Correo E.",
         modelPropName: "email",
-        width: "25%"
+        width: "25%",
+        minVisibleContainerWidth: 730
     }, {
         headerText: "Edad",
         modelPropName: "age",
-        width: 40
+        width: 40,
+        minVisibleContainerWidth: 490
     }, {
         width: 80
     }];
@@ -91,8 +94,8 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
         var result = 0;
         for(var i = 0; i < this.colsData.length; i++) {
             var width = this.colsData[i].width;
-            if(typeof width === "number" && this.isColVisible(this.colsData[i])) {
-                result = result + width;
+            if(typeof width === "number" && this.colsData[i].isVisible) {
+                result += width;
             }
         }
         return result;
@@ -103,7 +106,7 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
         for(var i = 0; i < this.colsData.length; i++) {
             var width = this.colsData[i].width;
             if(typeof width === "string") {
-                if(!this.isColVisible(this.colsData[i])) {
+                if(!this.colsData[i].isVisible) {
                     remainingWidth += parseInt(width.substring(0, width.length - 1));
                 }
                 else {
@@ -133,24 +136,32 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
             width: realWidth
         };
     }
+    calcColSizes(): void {
+        this.colsData.forEach((colData: IColData) => {
+            colData.style = this.colStyle(colData.width);
+            colData.isVisible = this.isColVisible(colData);
+        });
+    }
 
     render() {
         console.log("rendering...");
+        console.log("Table width: " + this.state.totalWidth);
+
         var tableStyle = {
             tableLayout: "fixed"
         };
         
         return (
             <Paper zDepth={1} style={this.props.style}>
-                <Measure whitelist={["width"]} onMeasure={(dimensions: any) => this.setState({totalWidth: dimensions.width})}>
+                <Measure whitelist={["width"]} onMeasure={(dimensions: any) => { this.setState({totalWidth: dimensions.width}); this.calcColSizes(); }}>
                     <table style={tableStyle}>
                         <thead>
                             <tr>
                                 {this.colsData.map((colData: IColData, index: number) => 
-                                    this.isColVisible(colData)?
+                                    colData.isVisible?
                                         (index === 0?
-                                            <th key={"th_"+index} style={this.colStyle(colData.width)}><Checkbox /></th> :
-                                            <th key={"th_"+index} style={this.colStyle(colData.width)}>{colData.headerText || ""}</th>) :
+                                            <th key={"th_"+index} style={colData.style}><Checkbox /></th> :
+                                            <th key={"th_"+index} style={colData.style}>{colData.headerText || ""}</th>) :
                                         false
                                 )}
                             </tr>
@@ -159,10 +170,10 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
                             {this.props.clients.map((client: Client) => 
                                 <tr key={client.id}>
                                     {this.colsData.map((colData: IColData, index: number) =>
-                                        this.isColVisible(colData)?
+                                        colData.isVisible?
                                             (index === 0?
-                                                <td key={"td_"+client.id + "_"+index} style={this.colStyle(colData.width)}><Checkbox /></td> :
-                                                <td key={"td_"+client.id + "_"+index} style={this.colStyle(colData.width)}>{(client as any)[colData.modelPropName] || ""}</td>) :
+                                                <td key={"td_"+client.id + "_"+index} style={colData.style}><Checkbox /></td> :
+                                                <td key={"td_"+client.id + "_"+index} style={colData.style}>{(client as any)[colData.modelPropName] || ""}</td>) :
                                             false
                                     )}
                                 </tr>

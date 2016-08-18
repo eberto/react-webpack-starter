@@ -1,4 +1,3 @@
-import "./../../../node_modules/materialize-css/dist/css/materialize.css"
 import "./styles/materialize-overrides.scss"
 
 import { IStore, Store } from "viperx"
