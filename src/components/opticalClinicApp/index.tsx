@@ -11,26 +11,19 @@ export interface IOpticalClinicAppProps {
     clientsService: IClientsService;
 }
 
-export interface IOpticalClinicAppState {
-    clients: Array<Client>;
-}
-
-export class OpticalClinicApp extends React.Component<IOpticalClinicAppProps, IOpticalClinicAppState> {
+export class OpticalClinicApp extends React.Component<IOpticalClinicAppProps, {}> {
     
     constructor() {
         super();
-        this.state = { clients: new Array<Client>() };
     }
 
     componentDidMount() {
-        this.props.clientsService.fetch().then((clients: Array<Client>) => {
-            this.setState({ clients: clients });
-        });
+        this.props.clientsService.fetch();
     }
     
     render() {
         var clientsService = this.props.clientsService;
-        var clientsStyle = { marginLeft: "auto", marginRight: "auto", padding: 24, marginTop: "80px", width: "90%", minWidth: 300/*, border: "1px solid black"*/ }
+        var clientsStyle = { marginLeft: "auto", marginRight: "auto", padding: 24, marginTop: "80px", width: "90%", minWidth: 300 };
         return (
             <Clients style={clientsStyle} clients={clientsService.getAll()} onDelete={clientsService.delete.bind(clientsService)} isFetching={clientsService.isFetching()} />
         );

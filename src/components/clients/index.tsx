@@ -18,6 +18,7 @@ export interface IClientsProps {
 
 export interface IClientsState {
 	totalWidth: number;
+
 }
 
 interface IColData {
@@ -44,21 +45,21 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
         headerText: "RUC / CI",
         modelPropName: "identification",
         width: 90,
-        minVisibleContainerWidth: 442
+        minVisibleContainerWidth: 1000
     }, {
         headerText: "F. Nacimiento",
         width: 85,
-        minVisibleContainerWidth: 1300
+        minVisibleContainerWidth: 1000
     }, {
         headerText: "Dirección",
         modelPropName: "address",
         width: "25%",
-        minVisibleContainerWidth: 950
+        minVisibleContainerWidth: 1000
     }, {
         headerText: "Teléfono 1",
         modelPropName: "phone1",
         width: 70,
-        minVisibleContainerWidth: 1300
+        minVisibleContainerWidth: 1000
     }, {
         headerText: "Teléfono 2",
         modelPropName: "phone2",
@@ -72,12 +73,12 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
         headerText: "Correo E.",
         modelPropName: "email",
         width: "25%",
-        minVisibleContainerWidth: 730
+        minVisibleContainerWidth: 1000
     }, {
         headerText: "Edad",
         modelPropName: "age",
         width: 40,
-        minVisibleContainerWidth: 490
+        minVisibleContainerWidth: 1000
     }, {
         width: 80
     }];
@@ -100,7 +101,7 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
         }
         return result;
     }
-    calcExtraPercent(): number {
+    calcAvgAvailableWidth(): number {
         var remainingWidth = 0;
         var totalVisibleCols = 0;
         for(var i = 0; i < this.colsData.length; i++) {
@@ -114,18 +115,17 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
                 }
             }
         }
-        console.log(remainingWidth);
         return remainingWidth / totalVisibleCols;
     }
-    calcColPercentWidth(width: string): string {
-        var extraWidth = this.state.totalWidth - this.sumFixed();
-        var extraPercent = parseInt(width.substring(0, width.length - 1)) / 100 * extraWidth + this.calcExtraPercent();
-        return (extraPercent * 100 / this.state.totalWidth) + "%";
+    calcColPercentWidth(totalWidth: number, width: string): string {
+        var extraWidth = totalWidth - this.sumFixed();
+        var extraPercent = parseInt(width.substring(0, width.length - 1)) / 100 * extraWidth + this.calcAvgAvailableWidth();
+        return (extraPercent * 100 / totalWidth) + "%";
     }
-    colStyle(width: number|string): any {
+    colStyle(totalWidth: number, width: number|string): any {
         var realWidth = width;
         if(typeof width === "string") {
-            realWidth = this.calcColPercentWidth(width);
+            realWidth = this.calcColPercentWidth(totalWidth, width);
         }
         return {
             paddingLeft: 5,
@@ -136,24 +136,54 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
             width: realWidth
         };
     }
-    calcColSizes(): void {
+    calcColSizes(totalWidth: number): void {
+        console.log("Table width in calculation: " + totalWidth);
+        console.log("Calculating...");
         this.colsData.forEach((colData: IColData) => {
-            colData.style = this.colStyle(colData.width);
+            colData.style = this.colStyle(totalWidth, colData.width);
             colData.isVisible = this.isColVisible(colData);
         });
     }
+    shouldComponentUpdate(nextProps: IClientsProps, nextState: IClientsState) {
+
+        /*console.log("Next Props: ");
+        console.log(nextProps);
+        console.log("Curr Props: ");
+        console.log(this.props);
+        console.log("Next State: ");
+        console.log(nextState);
+        console.log("Curr State: ");
+        console.log(this.state);*/
+
+        //return this.state.totalWidth !== nextState.totalWidth && this.props.clients.length !== nextProps.clients.length;
+
+        //console.log("Next state width: " + nextState.totalWidth);
+        //return nextState.totalWidth > 0;
+        return true;
+
+    }
+
+    private renderTimes: number = 0;
 
     render() {
-        console.log("rendering...");
-        console.log("Table width: " + this.state.totalWidth);
+        console.log("rendering..." + (++this.renderTimes));
 
         var tableStyle = {
-            tableLayout: "fixed"
+            tableLayout: "fixed",
+            border: "2px solid red",
+            width: "100%"
         };
         
         return (
             <Paper zDepth={1} style={this.props.style}>
-                <Measure whitelist={["width"]} onMeasure={(dimensions: any) => { this.setState({totalWidth: dimensions.width}); this.calcColSizes(); }}>
+                <Measure whitelist={["width"]} blacklist={["height", "left", "right", "top", "bottom"]}
+                         onMeasure={(dimensions: any) => {
+                             console.log("Measuring...");
+                             if(dimensions.width > 0 && this.props.clients.length > 0) {
+                                 this.calcColSizes(dimensions.width);
+                                 this.setState({totalWidth: dimensions.width});
+                             }
+                         }}>
                     <table style={tableStyle}>
                         <thead>
                             <tr>
@@ -179,7 +209,7 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
                                 </tr>
                             )}
                             <tr className="last-row">
-                                <td>Last Row for Pagination</td>
+                                <td>{this.state.totalWidth}</td>
                             </tr>
                         </tbody>
                     </table>
