@@ -3,10 +3,12 @@
 import "./styles/index.scss"
 
 import * as React from "react"
-import * as Measure from "react-measure"
-import Checkbox from "material-ui/Checkbox"
 import Paper from "material-ui/Paper"
 import { Client } from "./../../models/client"
+import {DataTable} from "../material/table/index"
+import {TextColumn} from "../material/table/TextColumn"
+import {SelectionColumn} from "../material/table/SelectionColumn"
+import {ActionsColumn} from "../material/table/ActionsColumn"
 
 export interface IClientsProps {
     className?: string;
@@ -82,139 +84,127 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
     }, {
         width: 80
     }];
-
     constructor() {
         super();
         this.state = { totalWidth: 0 };
     }
-    isColVisible(colData: IColData) {
+    isColVisible(totalWidth: number, colData: IColData) {
         var minVisibleWidth = colData.minVisibleContainerWidth;
-        return !minVisibleWidth || this.state.totalWidth > minVisibleWidth;
+        return !minVisibleWidth || totalWidth > minVisibleWidth;
     }
     sumFixed(): number {
         var result = 0;
-        for(var i = 0; i < this.colsData.length; i++) {
-            var width = this.colsData[i].width;
-            if(typeof width === "number" && this.colsData[i].isVisible) {
+        this.colsData.forEach((colData: IColData) => {
+            var width = colData.width;
+            if(typeof width === "number" && colData.isVisible) {
                 result += width;
             }
+        });
+        return result;
+    }
+    avgVariableAvailableWidth(): number {
+        var invisibleVariableTotalWidth = 0;
+        var visibleColsCount = 0;
+        this.colsData.forEach((colData: IColData) => {
+            var width = colData.width;
+            if(typeof width === "string") {
+                if(!colData.isVisible) {
+                    invisibleVariableTotalWidth += parseInt(width.substring(0, width.length - 1));
+                }
+                else {
+                    visibleColsCount++;
+                }
+            }
+        });
+        return invisibleVariableTotalWidth > 0? invisibleVariableTotalWidth / visibleColsCount : 0;
+    }
+    calcColWidth(totalWidth: number, variableWidth: number, avgAvailableWidth: number, width: number|string): any {
+        var result = width;
+        if(typeof width === "string") {
+            var withNum = parseInt(width.substring(0, width.length - 1)) / 100;
+            var pixels = withNum * variableWidth + avgAvailableWidth;
+            result = (pixels * 100 / totalWidth) + "%";
         }
         return result;
     }
-    calcAvgAvailableWidth(): number {
-        var remainingWidth = 0;
-        var totalVisibleCols = 0;
-        for(var i = 0; i < this.colsData.length; i++) {
-            var width = this.colsData[i].width;
-            if(typeof width === "string") {
-                if(!this.colsData[i].isVisible) {
-                    remainingWidth += parseInt(width.substring(0, width.length - 1));
-                }
-                else {
-                    totalVisibleCols++;
-                }
-            }
-        }
-        return remainingWidth / totalVisibleCols;
-    }
-    calcColPercentWidth(totalWidth: number, width: string): string {
-        var extraWidth = totalWidth - this.sumFixed();
-        var extraPercent = parseInt(width.substring(0, width.length - 1)) / 100 * extraWidth + this.calcAvgAvailableWidth();
-        return (extraPercent * 100 / totalWidth) + "%";
-    }
-    colStyle(totalWidth: number, width: number|string): any {
-        var realWidth = width;
-        if(typeof width === "string") {
-            realWidth = this.calcColPercentWidth(totalWidth, width);
-        }
-        return {
+    setColStyles(totalWidth: number): void {
+        this.colsData.forEach((colData: IColData) => colData.isVisible = this.isColVisible(totalWidth, colData));
+        var variableWidth = totalWidth - this.sumFixed();
+        var avgAvailableWidth = this.avgVariableAvailableWidth();
+        this.colsData.forEach((colData: IColData) => colData.style = {
             paddingLeft: 5,
             paddingRight: 5,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            width: realWidth
-        };
-    }
-    calcColSizes(totalWidth: number): void {
-        console.log("Table width in calculation: " + totalWidth);
-        console.log("Calculating...");
-        this.colsData.forEach((colData: IColData) => {
-            colData.style = this.colStyle(totalWidth, colData.width);
-            colData.isVisible = this.isColVisible(colData);
+            width: this.calcColWidth(totalWidth, variableWidth, avgAvailableWidth, colData.width)
         });
     }
-    shouldComponentUpdate(nextProps: IClientsProps, nextState: IClientsState) {
-
-        /*console.log("Next Props: ");
-        console.log(nextProps);
-        console.log("Curr Props: ");
-        console.log(this.props);
-        console.log("Next State: ");
-        console.log(nextState);
-        console.log("Curr State: ");
-        console.log(this.state);*/
-
-        //return this.state.totalWidth !== nextState.totalWidth && this.props.clients.length !== nextProps.clients.length;
-
-        //console.log("Next state width: " + nextState.totalWidth);
-        //return nextState.totalWidth > 0;
-        return true;
-
-    }
-
-    private renderTimes: number = 0;
 
     render() {
-        console.log("rendering..." + (++this.renderTimes));
-
         var tableStyle = {
             tableLayout: "fixed",
             border: "2px solid red",
             width: "100%"
         };
-        
+        //After RUC / CI:  <TextColumn headerText="F. Nacimiento" modelProp="birthDate" />
         return (
             <Paper zDepth={1} style={this.props.style}>
-                <Measure whitelist={["width"]} blacklist={["height", "left", "right", "top", "bottom"]}
-                         onMeasure={(dimensions: any) => {
-                             console.log("Measuring...");
-                             if(dimensions.width > 0 && this.props.clients.length > 0) {
-                                 this.calcColSizes(dimensions.width);
+                <DataTable data={this.props.clients}>
+                    <SelectionColumn onSelect={()=>{}} />
+                    <TextColumn headerText="Nombre" modelProp="firstName" width="25%" />
+                    <TextColumn headerText="Apellido" modelProp="lastName" width="25%" />
+                    <TextColumn headerText="RUC / CI" modelProp="identification" width={90}  minWidthVisible={1000} />
+                    <TextColumn headerText="Dirección" modelProp="address" width="25%" minWidthVisible={1000} />
+                    <TextColumn headerText="Teléfono 1" modelProp="phone1" width={70}  minWidthVisible={1000} />
+                    <TextColumn headerText="Teléfono 2" modelProp="phone2"  width={70}  minWidthVisible={1300} />
+                    <TextColumn headerText="Tel. Móvil" modelProp="mobilePhone" width={80} />
+                    <TextColumn headerText="Correo E." modelProp="email" width="25%"  minWidthVisible={1000} />
+                    <TextColumn headerText="Edad" modelProp="age" width={40}  minWidthVisible={1000} />
+                    <ActionsColumn onEdit={()=>{}} onDelete={()=>{}} width={80} />
+                </DataTable>
+            </Paper>
+        );
+
+        /*<Measure whitelist={["width"]} blacklist={["height", "left", "right", "top", "bottom"]}
+                 onMeasure={(dimensions: any) => {
+                             if(dimensions.width > 0) {
+                                 this.setColStyles(dimensions.width);
                                  this.setState({totalWidth: dimensions.width});
                              }
                          }}>
-                    <table style={tableStyle}>
-                        <thead>
-                            <tr>
-                                {this.colsData.map((colData: IColData, index: number) => 
-                                    colData.isVisible?
-                                        (index === 0?
-                                            <th key={"th_"+index} style={colData.style}><Checkbox /></th> :
-                                            <th key={"th_"+index} style={colData.style}>{colData.headerText || ""}</th>) :
-                                        false
-                                )}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.props.clients.map((client: Client) => 
-                                <tr key={client.id}>
-                                    {this.colsData.map((colData: IColData, index: number) =>
-                                        colData.isVisible?
-                                            (index === 0?
-                                                <td key={"td_"+client.id + "_"+index} style={colData.style}><Checkbox /></td> :
-                                                <td key={"td_"+client.id + "_"+index} style={colData.style}>{(client as any)[colData.modelPropName] || ""}</td>) :
-                                            false
-                                    )}
-                                </tr>
-                            )}
-                            <tr className="last-row">
-                                <td>{this.state.totalWidth}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </Measure>
-            </Paper>
-        );        
+            <table style={tableStyle}>
+                <thead>
+                <tr>
+                    {this.colsData.map((colData: IColData, index: number) =>
+                        colData.isVisible?
+                            (index === 0?
+                                <th key={"th_"+index} style={colData.style}><Checkbox /></th> :
+                                <th key={"th_"+index} style={colData.style}>{colData.headerText || ""}</th>) :
+                            false
+                    )}
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{this.state.totalWidth}</td>
+                </tr>
+                {this.props.clients.map((client: Client) =>
+                    <tr key={client.id}>
+                        {this.colsData.map((colData: IColData, index: number) =>
+                            colData.isVisible?
+                                (index === 0?
+                                    <td key={"td_"+client.id + "_"+index} style={colData.style}><Checkbox /></td> :
+                                    <td key={"td_"+client.id + "_"+index} style={colData.style}>{(client as any)[colData.modelPropName] || ""}</td>) :
+                                false
+                        )}
+                    </tr>
+                )}
+                <tr className="last-row">
+                    <td>Pagination</td>
+                </tr>
+                </tbody>
+            </table>
+        </Measure>*/
     }
 }
