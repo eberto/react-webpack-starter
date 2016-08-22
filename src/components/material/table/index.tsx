@@ -1,6 +1,12 @@
 import * as React from "react"
 import * as Measure from "react-measure"
+import {assign} from "lodash"
 import Checkbox from "material-ui/Checkbox"
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
+import getMuiTheme from "material-ui/styles/getMuiTheme"
+import FlatButton from "material-ui/FlatButton"
+import ActionDelete from "material-ui/svg-icons/action/delete"
+import EditorModeEdit from "material-ui/svg-icons/editor/mode-edit"
 
 export interface IDataTableProps {
     data: Array<any>;
@@ -11,8 +17,8 @@ export interface IDataTableState {
 }
 
 interface IColData {
+    isVisible: boolean;
     style: React.CSSProperties;
-    isVisible?: boolean;
 }
 
 export class DataTable extends React.Component<IDataTableProps, IDataTableState> {
@@ -31,107 +37,109 @@ export class DataTable extends React.Component<IDataTableProps, IDataTableState>
     render(): JSX.Element {
         var tableStyle = {
             tableLayout: "fixed",
-            border: "2px solid red",
             width: "100%"
         };
+        const theme = getMuiTheme({
+          checkbox: {
+            boxColor: "rgb(158, 158, 158)",
+          },
+        });
         return (
-            <Measure whitelist={["width"]}
-                onMeasure={(dimensions: any) => {
-                    if(dimensions.width > 0) {
-                        this.setColStyles(dimensions.width);
-                        this.setState({totalWidth: dimensions.width});
-                    }
-                }}>
-                <table style={tableStyle}>
-                    <thead>
-                        <tr>
-                            {(this.props.children as any[]).map((child: any, i: number) => {
-                                if(!this.colsData[i].isVisible) return false;
-                                switch(child.type.name) {
-                                    case "SelectionColumn":
-                                        return <th key={"th_"+i} style={this.colsData[i].style}><Checkbox /></th>;
-                                    case "TextColumn":
-                                        return <th key={"th_"+i} style={this.colsData[i].style}>{child.props.headerText || ""}</th>;
-                                    default:
-                                        return false;
-                                }
-                            })}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.props.data.map((entry: any, i: number) =>
-                            <tr key={"tr_"+i}>
-                                {(this.props.children as any[]).map((child: any, j: number) => {
-                                    if(!this.colsData[j].isVisible) return false;
+            <MuiThemeProvider muiTheme={theme}>
+                <Measure whitelist={["width"]}
+                    onMeasure={(dimensions: any) => {
+                        if(dimensions.width > 0) {
+                            this.setColStyles(dimensions.width);
+                            this.setState({totalWidth: dimensions.width});
+                        }
+                    }}>
+                    <table style={tableStyle}>
+                        <thead>
+                            <tr>
+                                {(this.props.children as any[]).map((child: any, i: number) => {
+                                    if(!this.colsData[i].isVisible) return false;
                                     switch(child.type.name) {
                                         case "SelectionColumn":
-                                            return <td key={"td_"+j} style={this.colsData[j].style}><Checkbox /></td>;
+                                            return <th key={"th_"+i} style={this.colsData[i].style}><Checkbox /></th>;
                                         case "TextColumn":
-                                            return <td key={"td_"+j} style={this.colsData[j].style}>{entry[child.props.modelProp] || ""}</td>;
+                                            return <th key={"th_"+i} style={this.colsData[i].style}>{child.props.headerText || ""}</th>;
+                                        case "ActionsColumn":
+                                                return <td key={"td_"+i} style={this.colsData[i].style}></td>;
                                         default:
                                             return false;
                                     }
                                 })}
                             </tr>
-                        )}
-                        <tr>
-                            <td>{this.state.totalWidth}</td>
-                        </tr>
-                        <tr className="last-row">
-                            <td>Pagination</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </Measure>
+                        </thead>
+                        <tbody>
+                            {this.props.data.map((entry: any, i: number) =>
+                                <tr key={"tr_"+i}>
+                                    {(this.props.children as any[]).map((child: any, j: number) => {
+                                        if(!this.colsData[j].isVisible) return false;
+                                        switch(child.type.name) {
+                                            case "SelectionColumn":
+                                                return <td key={"td_"+j} style={this.colsData[j].style}><Checkbox /></td>;
+                                            case "TextColumn":
+                                                return <td key={"td_"+j} style={this.colsData[j].style}>{entry[child.props.modelProp] || ""}</td>;
+                                            case "ActionsColumn":
+                                                return <td key={"td_"+j} style={assign({}, this.colsData[j].style, {textAlign: "right"})}>
+                                                    {child.props.onEdit? <FlatButton icon={<EditorModeEdit color="rgb(158, 158, 158)" />} style={{minWidth: 0}} /> : false}
+                                                    {child.props.onDelete? <FlatButton icon={<ActionDelete color="rgb(158, 158, 158)" />} style={{minWidth: 0}} /> : false}
+                                                </td>;
+                                            default:
+                                                return false;
+                                        }
+                                    })}
+                                </tr>
+                            )}
+                            <tr className="last-row">
+                                <td>Pagination</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </Measure>
+            </MuiThemeProvider>
         );
     }
+
     setColStyles(totalWidth?: number): void {
-        for(var index = 0; index < (this.props.children as any[]).length; index++) {
-            this.colsData.push({
+        if(!this.props.children) return;
+        var children = this.props.children as any[];
+        var visibleFixedSum = 0;
+        var invisibleVariableTotalWidth = 0;
+        var visibleVariableCount = 0;
+        this.colsData = children.map((child: any, i: number) => {
+            var width = child.props.width;
+            var isVisible = !child.props.minWidthVisible || child.props.minWidthVisible < totalWidth;
+            if(typeof width === "number" && isVisible) {
+                visibleFixedSum += width;
+            }
+            else if(typeof width === "string") {
+                if(!isVisible) {
+                    invisibleVariableTotalWidth += parseInt(width.substring(0, width.length - 1));;
+                }
+                else {
+                    visibleVariableCount++;
+                }
+            }
+            return { 
+                isVisible: isVisible,
                 style: {
                     paddingLeft: 5,
                     paddingRight: 5,
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis"
-                },
-                isVisible: true
-            });
-        }
+                }
+            };
+        });
+        var variableWidth = totalWidth - visibleFixedSum;
+        var avgAvailableWidth = invisibleVariableTotalWidth > 0? invisibleVariableTotalWidth / visibleVariableCount : 0;
+        children.forEach((child: any, i: number) =>
+            this.colsData[i].style.width = this.calcColWidth(totalWidth, variableWidth, avgAvailableWidth, child.props.width)
+        );
     }
 
-    //----------
-
-    isColVisible(totalWidth: number, colData: IColData) {
-        var minVisibleWidth = colData.minVisibleContainerWidth;
-        return !minVisibleWidth || totalWidth > minVisibleWidth;
-    }
-    sumFixed(): number {
-        var result = 0;
-        this.colsData.forEach((colData: IColData) => {
-            var width = colData.width;
-            if(typeof width === "number" && colData.isVisible) {
-                result += width;
-            }
-        });
-        return result;
-    }
-    avgVariableAvailableWidth(): number {
-        var invisibleVariableTotalWidth = 0;
-        var visibleColsCount = 0;
-        this.colsData.forEach((colData: IColData) => {
-            var width = colData.width;
-            if(typeof width === "string") {
-                if(!colData.isVisible) {
-                    invisibleVariableTotalWidth += parseInt(width.substring(0, width.length - 1));
-                }
-                else {
-                    visibleColsCount++;
-                }
-            }
-        });
-        return invisibleVariableTotalWidth > 0? invisibleVariableTotalWidth / visibleColsCount : 0;
-    }
     calcColWidth(totalWidth: number, variableWidth: number, avgAvailableWidth: number, width: number|string): any {
         var result = width;
         if(typeof width === "string") {
@@ -140,18 +148,5 @@ export class DataTable extends React.Component<IDataTableProps, IDataTableState>
             result = (pixels * 100 / totalWidth) + "%";
         }
         return result;
-    }
-    setColStyles(totalWidth: number): void {
-        this.colsData.forEach((colData: IColData) => colData.isVisible = this.isColVisible(totalWidth, colData));
-        var variableWidth = totalWidth - this.sumFixed();
-        var avgAvailableWidth = this.avgVariableAvailableWidth();
-        this.colsData.forEach((colData: IColData) => colData.style = {
-            paddingLeft: 5,
-            paddingRight: 5,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            width: this.calcColWidth(totalWidth, variableWidth, avgAvailableWidth, colData.width)
-        });
     }
 }

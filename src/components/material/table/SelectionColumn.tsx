@@ -4,6 +4,7 @@ export interface ITextColumnProps {
     modelProp?: string;
     width?: number|string;
     minWidthVisible?: number;
+    onSelect?: (entry: any) => any;
 }
 
 export class SelectionColumn extends React.Component<ITextColumnProps, {}> {

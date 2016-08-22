@@ -44,7 +44,8 @@ th, td {
 }
 
 th {
-    color: rgb(158, 158, 158);
+    color: rgb(158, 158, 158) !important;
+    fill: rgb(158, 158, 158) !important;
     font-size: 12px;
     padding-top: 16px !important;
     padding-bottom: 14px !important;
