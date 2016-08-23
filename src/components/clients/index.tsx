@@ -31,15 +31,11 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
     }
 
     render() {
-        var tableStyle = {
-            tableLayout: "fixed",
-            width: "100%"
-        };
         //After RUC / CI:  <TextColumn headerText="F. Nacimiento" modelProp="birthDate" />
         return (
             <Paper zDepth={1} style={this.props.style}>
-                <DataTable data={this.props.clients}>
-                    <SelectionColumn width={40} onSelect={()=>{}} />
+                <DataTable title="Clientes" data={this.props.clients.filter((c: any, i: number) => i < 10)}>
+                    <SelectionColumn width={30} onSelect={()=>{}} />
                     <TextColumn headerText="Nombre" modelProp="firstName" width="25%" />
                     <TextColumn headerText="Apellido" modelProp="lastName" width="25%" minWidthVisible={321} />
                     <TextColumn headerText="RUC / CI" modelProp="identification" width={90}  minWidthVisible={700} />
