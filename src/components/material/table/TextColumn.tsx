@@ -6,6 +6,8 @@ export interface ITextColumnProps {
     modelProp?: string;
     width?: number|string;
     minWidthVisible?: number;
+    cellStyle?: React.CSSProperties;
+    headerCellStyle?: React.CSSProperties;
 }
 
 export class TextColumn extends React.Component<ITextColumnProps, {}> {

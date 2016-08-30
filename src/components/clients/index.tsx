@@ -35,7 +35,7 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
         return (
             <Paper zDepth={1} style={this.props.style}>
                 <DataTable title="Clientes" data={this.props.clients.filter((c: any, i: number) => i < 10)}>
-                    <SelectionColumn width={30} onSelect={()=>{}} />
+                    <SelectionColumn width={66} onSelect={()=>{}} />
                     <TextColumn headerText="Nombre" modelProp="firstName" width="25%" />
                     <TextColumn headerText="Apellido" modelProp="lastName" width="25%" minWidthVisible={321} />
                     <TextColumn headerText="RUC / CI" modelProp="identification" width={90}  minWidthVisible={700} />
@@ -44,8 +44,8 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
                     <TextColumn headerText="Teléfono 2" modelProp="phone2"  width={70}  minWidthVisible={800} />
                     <TextColumn headerText="Tel. Móvil" modelProp="mobilePhone" width={80} />
                     <TextColumn headerText="Correo E." modelProp="email" width="25%"  minWidthVisible={1000} />
-                    <TextColumn headerText="Edad" modelProp="age" width={40}  minWidthVisible={500} />
-                    <ActionsColumn onEdit={()=>{}} onDelete={()=>{}} width={80} />
+                    <TextColumn headerText="Edad" modelProp="age" width={40}  minWidthVisible={500} cellStyle={{textAlign: "right"}} headerCellStyle={{textAlign: "right"}} />
+                    <ActionsColumn onEdit={()=>{}} onDelete={()=>{}} width={90} />
                 </DataTable>
             </Paper>
         );
