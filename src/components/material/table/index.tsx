@@ -1,12 +1,10 @@
 import * as React from "react"
 import * as Measure from "react-measure"
-import {assign} from "lodash"
-import Checkbox from "material-ui/Checkbox"
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
 import getMuiTheme from "material-ui/styles/getMuiTheme"
-import FlatButton from "material-ui/FlatButton"
-import ActionDelete from "material-ui/svg-icons/action/delete"
-import EditorModeEdit from "material-ui/svg-icons/editor/mode-edit"
+import {TextColumn} from "./TextColumn"
+import {SelectionColumn} from "./SelectionColumn"
+import {ActionsColumn} from "./ActionsColumn"
 
 export interface IDataTableProps {
     title?: string;
@@ -21,6 +19,7 @@ interface IColData {
     isVisible: boolean;
     headerStyle: React.CSSProperties;
     bodyStyle: React.CSSProperties;
+    width?: number;
 }
 
 export class DataTable extends React.Component<IDataTableProps, IDataTableState> {
@@ -38,72 +37,18 @@ export class DataTable extends React.Component<IDataTableProps, IDataTableState>
     }
 
     public getStyles(): any {
-        var rowStyle = {
-            boxSizing: "border-box",
-            display: "block",
-            borderBottom: "1px solid #E0E0E0",
-            whiteSpace: "nowrap",
-            overflow: "hidden"
-        };
-        var cellStyle = {
-            boxSizing: "border-box",
-            display: "inline-block",
-            textAlign: "left",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            paddingLeft: 0,
-            paddingRight: 0,
-            position: "relative"
-        };
-        var headerCellStyle = assign({}, {
-            height: 56,
-            lineHeight: "56px",
-            fontSize: "12px",
-            color: "rgb(158, 158, 158)",
-        }, cellStyle);
         return {
             tableStyle: {
                 width: "100%",
-                paddingLeft: 0,
-                paddingRight: 0,
-                display: "block"
+                display: "block",
+                whiteSpace: "nowrap",
+                overflow: "hidden"
             },
             titleStyle: {
                 height: 62,
                 lineHeight: "62px",
                 fontSize: 20,
                 marginLeft: 23
-            },
-            headerRowStyle: assign({}, {
-                height: 56
-            }, rowStyle),
-            bodyRowStyle: assign({}, {
-                color: "#272727",
-                height: 48
-            }, rowStyle),
-            footerRowStyle:  assign({
-                height: 56
-            }, rowStyle),
-            headerCellStyle: headerCellStyle,
-            bodyCellStyle: assign({}, {
-                height: 48,
-                lineHeight: "48px",
-                fontSize: "13px",
-            }, cellStyle),
-            footerCellStyle: assign({}, headerCellStyle),
-            checkboxStyle: {
-                height: 24,
-                margin: "auto",
-                position: "absolute",
-                left: 21,
-                right: 0,
-                top: 0,
-                bottom: 0
-            },
-            actionButtonStyle: {
-                minWidth: 0,
-                color: "rgb(158, 158, 158)"
             }
         };
     }
@@ -111,13 +56,7 @@ export class DataTable extends React.Component<IDataTableProps, IDataTableState>
     public render(): JSX.Element {
         const {
             tableStyle,
-            titleStyle,
-            headerRowStyle,
-            bodyRowStyle,
-            footerRowStyle,
-            footerCellStyle,
-            checkboxStyle,
-            actionButtonStyle
+            titleStyle
         } = this.getStyles();
 
         const theme = getMuiTheme({
@@ -141,37 +80,38 @@ export class DataTable extends React.Component<IDataTableProps, IDataTableState>
                     }}>
                     <div style={tableStyle}>
                         {this.props.title && <div style={titleStyle}>{this.props.title}</div>}
-                        <div style={headerRowStyle}>
-                            {children.map((child: any, i: number) =>
-                                this.colsData[i].isVisible &&
-                                <div key={"header_"+i} style={this.colsData[i].headerStyle}>
-                                    {child.type.name === "SelectionColumn" && <Checkbox style={checkboxStyle} />}
-                                    {child.type.name === "TextColumn" && child.props.headerText || ""}
-                                </div>
-                            )}
-                        </div>
-                        {this.props.data.map((entry: any, i: number) =>
-                            <div key={"row_"+i} style={bodyRowStyle}>
-                                {children.map((child: any, j: number) =>
-                                    this.colsData[j].isVisible &&
-                                    <div key={"cell_"+i+"_"+j} style={this.colsData[j].bodyStyle}>
-                                        {child.type.name === "SelectionColumn" && <Checkbox style={checkboxStyle} />}
-                                        {child.type.name === "TextColumn" && entry[child.props.modelProp] || ""}
-                                        {child.type.name === "ActionsColumn" && child.props.onEdit && <FlatButton icon={<EditorModeEdit color={actionButtonStyle.color} />} style={actionButtonStyle} />}
-                                        {child.type.name === "ActionsColumn" && child.props.onDelete && <FlatButton icon={<ActionDelete color={actionButtonStyle.color} />} style={actionButtonStyle} />}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                        <div style={footerRowStyle}>
-                            <div style={footerCellStyle}>
-                                Pagination
-                            </div>
-                        </div>
+                        {children.map((child: any, i: number) => {
+                            if(this.colsData[i].isVisible) {
+                                if (child.type.name === "TextColumn") {
+                                    return <TextColumn key={"text_"+child.props.modelProp} {...child.props}
+                                                       width={this.colsData[i].width}
+                                                       data={this.props.data.map((entry: any) => entry[child.props.modelProp] || "")}/>
+                                }
+                                else if (child.type.name === "SelectionColumn") {
+                                    return <SelectionColumn key={"selection_"+child.props.modelProp} {...child.props}
+                                                       width={this.colsData[i].width}
+                                                       data={this.props.data.map((entry: any) => false /*TODO: get a selection prop*/)}/>
+                                }
+                                else if (child.type.name === "ActionsColumn") {
+                                    return <ActionsColumn key={"actions_"+child.props.modelProp} {...child.props}
+                                                            width={this.colsData[i].width}
+                                                            data={this.props.data.map((entry: any) => false /*TODO: pass other stuff */)}/>
+                                }
+                                return child;
+                            }
+                        })}
+
                     </div>
                 </Measure>
             </MuiThemeProvider>
         );
+        /*
+        <div style={footerRowStyle}>
+            <div style={footerCellStyle}>
+                Pagination
+            </div>
+        </div>
+        */
     }
 
     private setColStyles(totalWidth?: number): void {
@@ -202,21 +142,9 @@ export class DataTable extends React.Component<IDataTableProps, IDataTableState>
         });
         var variableWidth = totalWidth - visibleFixedSum;
         var avgAvailableWidth = invisibleVariableTotalWidth > 0? (invisibleVariableTotalWidth * variableWidth / 100)  / visibleVariableCount : 0;
-
-        const {
-            headerCellStyle,
-            bodyCellStyle
-        } = this.getStyles();
-
-        children.forEach((child: any, i: number) => {
-            var colWidth = DataTable.calcColWidth(totalWidth, variableWidth, avgAvailableWidth, child.props.width);
-            this.colsData[i].headerStyle = assign({}, headerCellStyle, {width: colWidth}, child.props.headerCellStyle);
-            this.colsData[i].bodyStyle = assign({}, bodyCellStyle, {width: colWidth}, child.props.cellStyle);
-            if(child.type.name === "ActionsColumn") {
-                this.colsData[i].bodyStyle.textAlign = "right";
-                this.colsData[i].bodyStyle.paddingRight = 19;
-            }
-        });
+        children.forEach((child: any, i: number) =>
+            this.colsData[i].width = DataTable.calcColWidth(totalWidth, variableWidth, avgAvailableWidth, child.props.width)
+        );
     }
 
     private static calcColWidth(totalWidth: number, variableWidth: number, avgAvailableWidth: number, width: number|string): any {
