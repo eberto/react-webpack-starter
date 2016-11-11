@@ -70,10 +70,6 @@ export class DataTable extends React.Component<IDataTableProps, IDataTableState>
                 <Measure whitelist={["width"]}
                     onMeasure={(dimensions: any) => {
                         if(dimensions.width > 0 && this.state.totalWidth !== dimensions.width) {
-                            if(this.measuringFirstTime) {
-                                this.measuringFirstTime = false;
-                                return;
-                            }
                             this.setColStyles(dimensions.width);
                             this.setState({totalWidth: dimensions.width});
                         }
@@ -105,13 +101,6 @@ export class DataTable extends React.Component<IDataTableProps, IDataTableState>
                 </Measure>
             </MuiThemeProvider>
         );
-        /*
-        <div style={footerRowStyle}>
-            <div style={footerCellStyle}>
-                Pagination
-            </div>
-        </div>
-        */
     }
 
     private setColStyles(totalWidth?: number): void {

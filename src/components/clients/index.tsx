@@ -10,32 +10,48 @@ import {TextColumn} from "../material/table/TextColumn"
 import {SelectionColumn} from "../material/table/SelectionColumn"
 import {ActionsColumn} from "../material/table/ActionsColumn"
 import {Pagination} from "../material/table/Pagination"
+import { IClientsService } from "./../../services/clients"
 
 export interface IClientsProps {
     className?: string;
     style?: any;
-    clients: Array<Client>;
-    isFetching: boolean;
-    onDelete: (todoId: number) => void;
+    clientsService: IClientsService;
 }
 
 export interface IClientsState {
 	totalWidth: number;
-
+    clients: Array<Client>;
+    totalClients: number;
 }
 
 export class Clients extends React.Component<IClientsProps, IClientsState> {
     
+    defaultPageSize: number;
+
     constructor() {
         super();
-        this.state = { totalWidth: 0 };
+        this.defaultPageSize = 10;
+        this.state = { totalWidth: 0, clients: [], totalClients: 0 };
+    }
+
+    componentDidMount() {
+        this.goToPage(1, this.defaultPageSize)
+    }
+
+    goToPage(page: number, pageSize: number) {
+        this.props.clientsService.fetch(page, pageSize)
+        .then(fetchedData => this.setState({
+            clients: fetchedData.clients, 
+            totalClients: fetchedData.totalClients,
+            totalWidth: this.state.totalWidth 
+        }));
     }
 
     render() {
         //After RUC / CI:  <TextColumn headerText="F. Nacimiento" modelProp="birthDate" />
         return (
             <Paper zDepth={1} style={this.props.style}>
-                <DataTable title="Clientes" data={this.props.clients.filter((c: any, i: number) => i < 10)}>
+                <DataTable title="Clientes" data={this.state.clients}>
                     <SelectionColumn width={66} onSelect={()=>{}} />
                     <TextColumn headerText="Nombre" modelProp="firstName" width="25%" />
                     <TextColumn headerText="Apellido" modelProp="lastName" width="25%" minWidthVisible={341} />
@@ -47,7 +63,10 @@ export class Clients extends React.Component<IClientsProps, IClientsState> {
                     <TextColumn headerText="Correo E." modelProp="email" width="25%"  minWidthVisible={1000} />
                     <TextColumn headerText="Edad" modelProp="age" width={40}  minWidthVisible={500} bodyCellStyle={{textAlign: "right"}} headerCellStyle={{textAlign: "right"}} />
                     <ActionsColumn onEdit={()=>{}} onDelete={()=>{}} width={90} />
-                    <Pagination pageSize={10} pageSizes={[10,20,50,75,100]} totalElements={this.props.clients.length} onBefore={() => {}} onNext={() => {}} onPageSizeChange={(newSize) => {console.log(newSize)}} />
+                    <Pagination pageSize={this.defaultPageSize} pageSizes={[10,20,50,75,100]} totalElements={this.state.totalClients} 
+                        onBefore={(currentPage, pageSize) => this.goToPage(currentPage, pageSize)} 
+                        onNext={(currentPage, pageSize) => this.goToPage(currentPage, pageSize)} 
+                        onPageSizeChange={newSize => this.goToPage(1, newSize)} />
                 </DataTable>
             </Paper>
         );

@@ -7,7 +7,7 @@ import { IAppState } from "./../models/state"
 import { Client } from "./../models/client"
 
 export interface IClientsService {
-    fetch(): Promise<Array<Client>>;
+    fetch(start: number, end: number): Promise<IFetchedData>;
     getAll(): Array<Client>;
     add(client: Client): Promise<Client>;
     delete(clientId: number): Promise<any>;
@@ -15,25 +15,35 @@ export interface IClientsService {
     isAdding(): boolean;
 }
 
+export interface IFetchedData {
+    clients: Array<Client>;
+    totalClients: number;
+}
+
 export class ClientsService implements IClientsService {
 
     public constructor(private store: IStore<IAppState>) {
     }
 
-    public fetch(): Promise<Array<Client>> {
+    public fetch(page: number, pageSize: number): Promise<IFetchedData> {
         this.store.dispatch(state => state.isFetching = true);
+        var start = (page - 1) * pageSize;
+        var end = start + pageSize;
         return this.store.dispatchAsync((state: IAppState, resolve: Function, reject: Function) => {
-            fetch("api/clients")
-            .then((response: any) => response.json())
-            .then((clients: Array<any>) => {
-                state.clients = clients.map((c: Client) => Client.copyFrom(c));
+            fetch(`api/clients?_start=${start}&_end=${end}`)
+            .then((response: any) => { 
+                return response.json().then((clients: Array<Client>) => {return { clients: clients, totalClients: parseInt(response.headers.get("X-Total-Count")) }});
+            })
+            .then((data: IFetchedData) => {
+                state.clients = data.clients.map((c: Client) => Client.copyFrom(c));
+                state.totalClients = data.totalClients;
                 state.isFetching = false;
                 resolve(state);
             })
             .catch((errors: any) => reject(errors));
         })
         .then((state: IAppState) => {
-            return state.clients;
+            return { clients: state.clients, totalClients: state.totalClients };
         });
     }
 

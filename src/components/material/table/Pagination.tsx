@@ -81,12 +81,14 @@ export class Pagination extends React.Component<IPaginationProps, IPaginationSta
 
     handleBeforePage(): void {
         event.preventDefault();
+        this.props.onBefore && this.props.onBefore(this.state.currentPage - 1, this.state.currentPageSize);
         this.updatePageState({currentPage: this.state.currentPage - 1});
     }
 
     handleNextPage(): void {
         event.preventDefault();
         this.updatePageState({currentPage: this.state.currentPage + 1});
+        this.props.onNext && this.props.onNext(this.state.currentPage + 1, this.state.currentPageSize);
     }
 
     updatePageState(state?: any): void {
@@ -102,12 +104,15 @@ export class Pagination extends React.Component<IPaginationProps, IPaginationSta
         if(rangeRight === this.props.totalElements) {
             nextDisabled = true;
         }
-        this.setState(assign({
+        var newState = {
             rangeLeft: rangeLeft,
             rangeRight: rangeRight,
+            currentPage: currentPage,
+            currentPageSize: currentPageSize,
             beforeDisabled: beforeDisabled,
             nextDisabled: nextDisabled
-        }, state));
+        };
+        this.setState(newState);
     }
 
     handleTouchTap(event: any): void {
@@ -130,11 +135,10 @@ export class Pagination extends React.Component<IPaginationProps, IPaginationSta
         this.updatePageState(state);
     }
 
-    componentWillReceiveProps(nextProps: IPaginationProps) {
-        var pageSize = nextProps.pageSize || 5;
+    componentWillMount() {
         this.setState({
-            currentPageSize: pageSize,
-            rangeRight: pageSize
+            currentPageSize: this.props.pageSize,
+            rangeRight: this.props.pageSize
         });
     }
 
