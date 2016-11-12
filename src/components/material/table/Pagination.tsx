@@ -81,8 +81,8 @@ export class Pagination extends React.Component<IPaginationProps, IPaginationSta
 
     handleBeforePage(): void {
         event.preventDefault();
-        this.props.onBefore && this.props.onBefore(this.state.currentPage - 1, this.state.currentPageSize);
         this.updatePageState({currentPage: this.state.currentPage - 1});
+        this.props.onBefore && this.props.onBefore(this.state.currentPage - 1, this.state.currentPageSize);
     }
 
     handleNextPage(): void {
@@ -98,6 +98,7 @@ export class Pagination extends React.Component<IPaginationProps, IPaginationSta
         var rangeRight = Math.min(currentPage * currentPageSize, this.props.totalElements);
         var beforeDisabled = false;
         var nextDisabled = false;
+        var dropDownOpen = state.dropDownOpen;
         if(rangeLeft === 1) {
             beforeDisabled = true;
         }
@@ -110,7 +111,8 @@ export class Pagination extends React.Component<IPaginationProps, IPaginationSta
             currentPage: currentPage,
             currentPageSize: currentPageSize,
             beforeDisabled: beforeDisabled,
-            nextDisabled: nextDisabled
+            nextDisabled: nextDisabled,
+            dropdownOpen: dropDownOpen
         };
         this.setState(newState);
     }
@@ -125,7 +127,7 @@ export class Pagination extends React.Component<IPaginationProps, IPaginationSta
 
     handleRequestClose(size?: number): void {
         var state: any = {dropdownOpen: false};
-        if(size && size != this.state.currentPageSize) {
+        if(size && !isNaN(parseInt(size.toString())) && size != this.state.currentPageSize) {
             state.currentPageSize = size || this.state.currentPageSize;
             state.currentPage = 1;
             if(this.props.onPageSizeChange) {
