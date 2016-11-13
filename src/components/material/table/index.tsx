@@ -24,12 +24,10 @@ interface IColData {
 
 export class DataTable extends React.Component<IDataTableProps, IDataTableState> {
     colsData: Array<IColData> = [];
-    measuringFirstTime: boolean;
 
     public constructor() {
         super();
         this.state = { totalWidth: 0 };
-        this.measuringFirstTime = true;
     }
 
     public componentWillMount() {
